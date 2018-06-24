@@ -30,13 +30,9 @@ do {
     return
 }
 
-xml.namespaceContext.prefix("tsl", uri: "http://uri.etsi.org/02231/v2#")
-print(xml["tsl:TrustServiceStatusList", "tsl:SchemeInformation", "tsl:TSLType"].text)
-// prints http://uri.etsi.org/TrstSvc/TrustedList/TSLType/EUlistofthelists
-
 xml.namespaceContext.noprefix("http://uri.etsi.org/02231/v2#")
 print(xml["TrustServiceStatusList", "SchemeInformation", "TSLType"].text)
-// also prints http://uri.etsi.org/TrstSvc/TrustedList/TSLType/EUlistofthelists
+// prints http://uri.etsi.org/TrstSvc/TrustedList/TSLType/EUlistofthelists
 
 ```
 
@@ -78,7 +74,35 @@ Given the following Example XML based on [w3schools.com XPath Tutorial](https://
 ## Parse String to XMLTools.Selection
 ```swift
 let xmlString = """
-See XML above
+<?xml version="1.0" encoding="UTF-8"?>
+
+<bookstore>
+
+<book>
+<title lang="en">Harry Potter: The Philosopher's Stone</title>
+<price>24.99</price>
+<pages>223</pages>
+</book>
+
+<book>
+<title lang="en">Harry Potter: The Chamber of Secrets</title>
+<price>29.99</price>
+<pages>251</pages>
+</book>
+
+<book>
+<title lang="en">Learning XML</title>
+<price>39.95</price>
+<pages>432</pages>
+</book>
+
+<book>
+<title lang="de">IT-Sicherheit: Konzepte - Verfahren - Protokolle</title>
+<price>69.95</price>
+<pages>932</pages>
+</book>
+
+</bookstore>
 """
 let parser = XMLTools.Parser()
 
