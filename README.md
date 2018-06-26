@@ -140,5 +140,13 @@ do {
 | ```//*```| ```xml.descendants()```|
 | ```count(//book)```| ```xml.descendants("book").count```|
 | ```bookstore/book[starts-with(title,'Harry Potter')]```| ```xml["bookstore", "book"].select({ $0["title"].text.starts(with: "Harry Potter") })```|
-| ``` ```| ``` ```|
-| ``` ```| ``` ```<br/>``` ```|
+
+# Development
+
+```XMLTools``` uses the Swift package manager
+```
+cd SwiftXMLTools
+swift package generate-xcodeproj
+swift build
+swift test
+```
