@@ -12,11 +12,12 @@ The problem with all projects I've found on GitHUB is that they only support the
 
 * Full Namespaces and QNames support
 * Lightweight DOM implementation
-* XPath like access to XML node tree (including Axis support)
+* XPath like access to XML node tree (including axis support)
 * Subscript and Sequence support (like all other libraries)
 * Datatypes Support (Text, Data, Int, Double, Bool)
 * Fully extensible to be used in specific use cases
-* _Under Development_: XML creation and manipulation, Encoding XML node tree to Data
+* Serializing XML Document to Data
+* _Under Development_: XML creation and manipulation,
 
 # Parsing
 ```swift
@@ -30,7 +31,7 @@ do {
     return
 }
 
-xml.namespaceContext.noprefix("http://uri.etsi.org/02231/v2#")
+xml.namespaceContext.declare(withNoPrefix: "http://uri.etsi.org/02231/v2#")
 print(xml["TrustServiceStatusList", "SchemeInformation", "TSLType"].text)
 // prints http://uri.etsi.org/TrstSvc/TrustedList/TSLType/EUlistofthelists
 

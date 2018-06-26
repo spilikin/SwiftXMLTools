@@ -14,45 +14,92 @@ extension NamespaceDeclaration {
     static let xml = NamespaceDeclaration("xml", uri:"https://www.w3.org/XML/1998/namespace")
     // XMLDSig
     static let ds = NamespaceDeclaration("ds", uri: "http://www.w3.org/2000/09/xmldsig#")
+    // XMLSchema
+    static let xs = NamespaceDeclaration("xs", uri: "http://www.w3.org/2001/XMLSchema")
+
+    
 
 }
 
-struct NamespaceContext {
-    var ns = [String:String]()
-    var defaultURI : String?
+class NamespaceContext {
+    private var ns = [String:String]()
 
+    init () {
+        
+    }
+    
+    static var defaultContext:NamespaceContext {
+        get {
+            let result = NamespaceContext()
+            result.declare(.xml)
+            return result
+        }
+    }
+    
+    init(copyOf context: NamespaceContext) {
+        context.ns.forEach { (k,v) in ns[k] = v }
+    }
+    
     @discardableResult
-    mutating func prefix(_ declaration: NamespaceDeclaration) -> NamespaceContext {
-        return prefix(declaration.prefix, uri:declaration.uri)
+    func declare(_ declaration: NamespaceDeclaration) -> NamespaceContext {
+        return declare(declaration.prefix, uri:declaration.uri)
     }
 
     @discardableResult
-    mutating func prefix(_ prefix: String, uri: String) -> NamespaceContext {
+    func declare(_ prefix: String, uri: String) -> NamespaceContext {
         self[prefix] = uri
         return self
     }
 
     @discardableResult
-    mutating func noprefix(_ declaration: NamespaceDeclaration) -> NamespaceContext {
-        return noprefix(declaration.uri)
+    func declare(withNoPrefix declaration: NamespaceDeclaration) -> NamespaceContext {
+        return declare(withNoPrefix: declaration.uri)
     }
 
     @discardableResult
-    mutating func noprefix(_ uri: String) -> NamespaceContext {
+    func declare(withNoPrefix uri: String) -> NamespaceContext {
         defaultURI = uri
-        self[""] = uri
         return self
     }
-    
+
+    var defaultURI : String? {
+        get {
+            return self[""]
+        }
+        set(uri) {
+            self[""] = uri
+        }
+    }
+
     subscript (prefix: String) -> String? {
         get {
             return ns[prefix]
         }
-        mutating set (uri) {
+        set (uri) {
             ns[prefix] = uri
         }
     }
 
+    func resolveURI(forPrefix prefix: String) -> String? {
+        return self[prefix]
+    }
+    
+    func resolvePrefix(forURI uri:String) -> String? {
+        for (key, value) in ns {
+            if value == uri {
+                return key
+            }
+        }
+        return nil
+    }
+    
+    func allPrefixes() -> Set<String> {
+        return Set(ns.keys)
+    }
+
+    func allURIs() -> Set<String> {
+        return Set(ns.values)
+    }
 }
 
 struct QName: Hashable, CustomStringConvertible {

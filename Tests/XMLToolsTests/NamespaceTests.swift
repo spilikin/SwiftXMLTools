@@ -40,7 +40,7 @@ class NamespaceTests: XCTestCase {
         XCTAssertEqual(xml["foo"]["bar"].attr(QN("attr", uri:"http://example.org/%7Ewilbur")).text, "3")
     }
 
-    let namespaceXML = """
+    public static let namespaceXML = """
     <?xml version="1.0" encoding="UTF-8"?>
     <level1 xmlns:nsA="urn:dummy_A">
       <level1_1>
@@ -59,7 +59,7 @@ class NamespaceTests: XCTestCase {
         
         let xml: XMLTools.Selection
         do {
-            xml = try parser.parse(string: namespaceXML, using: .utf8)
+            xml = try parser.parse(string: NamespaceTests.namespaceXML, using: .utf8)
         } catch  {
             XCTFail("Error: cant parse \(error)")
             return
@@ -72,13 +72,14 @@ class NamespaceTests: XCTestCase {
         XCTAssertEqual("Test1_1_1Test1_1_2", xml["level1", "level1_1"].text)
         XCTAssertEqual("Test1_2_1Test1_2_2", xml["level1", "level1_2"].text)
         
-        xml.namespaceContext.prefix("custom_A", uri: "urn:dummy_A")
-        xml.namespaceContext.prefix("custom_A_2", uri: "urn:dummy_A")
+        xml.namespaceContext.declare("custom_A", uri: "urn:dummy_A")
+        xml.namespaceContext.declare("custom_A_2", uri: "urn:dummy_A")
         XCTAssertEqual("Test1_1_1", xml["level1", "level1_1", "custom_A:level1_1_1"].text)
         XCTAssertEqual("Test1_1_1", xml["level1", "level1_1", "custom_A_2:level1_1_1"].text)
         
-        xml.namespaceContext.prefix("custom_B", uri: "urn:dummy_B")
+        xml.namespaceContext.declare("custom_B", uri: "urn:dummy_B")
         XCTAssertEqual("Test1_2_1", xml["level1", "level1_2", "custom_B:level1_2_1"].text)
+        
+        XCTAssertEqual("attr2_value", xml["level1", "level1_2", "custom_B:level1_2_2"].attr("custom_B:attr2").text )
     }
-
 }

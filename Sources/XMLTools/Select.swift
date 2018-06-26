@@ -42,8 +42,8 @@ class Selection : Sequence {
         get {
             return document().namespaceContext
         }
-        set(ctx) {
-            document().namespaceContext = ctx
+        set (context) {
+            document().namespaceContext = context
         }
     }
     

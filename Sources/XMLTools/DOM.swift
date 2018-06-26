@@ -53,7 +53,10 @@ class Attribute : NamedNode {
 
 class Element: NamedNode {
     lazy var attributes = [QName:Attribute]()
-    internal lazy var prefixMapping = [String:String]()
+    // all `xmlns` declarations as parsed from the source document
+    internal var sourceNamespaceContext: NamespaceContext?
+    // namespace context of the current document
+    var namespaceContext: NamespaceContext?
     
     
     @discardableResult
@@ -92,6 +95,27 @@ class Element: NamedNode {
         return node
     }
     
+    func resolveURI(forPrefix prefix: String ) -> String? {
+        var element:Element? = self
+        while (element != nil) {
+            if let uri = element?.namespaceContext?[prefix] {
+                return uri
+            }
+            element = element?.parentNode as? Element
+        }
+        return nil
+    }
+
+    func resolvePrefix(forURI uri:String) -> String? {
+        var element:Element? = self
+        while (element != nil) {
+            if let uri = element?.namespaceContext?.resolvePrefix(forURI: uri) {
+                return uri
+            }
+            element = element?.parentNode as? Element
+        }
+        return nil
+    }
 }
 
 class TextNode: Node {
@@ -118,16 +142,26 @@ class CDATANode : TextNode {
     
 }
 
+class ProcessingInstruction : Node {
+    let target: String
+    let data: String
+    
+    init (parent: Node, target:String, data:String) {
+        self.target = target
+        self.data = data
+        super.init(parent: parent)
+    }
+}
+
 class Document: Node {
     // only support XML 1.0
     let version = "1.0"
-    // default encoding is UTF-8
-    var encoding = String.Encoding.utf8
+    // only support UTF-8
+    let encoding = String.Encoding.utf8
     // Document is not standalone by default
     var standalone = false
-    
+
     var documentElement : Element?
-    var namespaceContext = NamespaceContext()
     
     init () {
         super.init(parent: nil)
@@ -141,9 +175,27 @@ class Document: Node {
     func appendElement(_ name: QName) -> Element {
         childNodes.removeAll()
         let element = Element(parent: self, name: name);
+        element.namespaceContext = .defaultContext
         childNodes.append(element)
         documentElement = element
         return element
+    }
+    
+    // the namespace context of the document is the one of it's root element
+    var namespaceContext : NamespaceContext {
+        get {
+            if let root = documentElement {
+                if root.namespaceContext == nil {
+                    root.namespaceContext = .defaultContext
+                }
+                return root.namespaceContext!
+            } else {
+                return .defaultContext
+            }
+        }
+        set (context) {
+            documentElement?.namespaceContext = context
+        }
     }
         
 }

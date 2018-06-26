@@ -21,34 +21,13 @@ class DOMTests: XCTestCase {
         XCTAssertEqual("ccc", doc.documentElement?.attributes[QName("name1", uri: "urn:test")]?.value)
     }
 
-    func testDOMHandler() {
-        class Handler:DocumentHandler {
+    func testTraversal() {
+        class Handler:DefaultDocumentHandler {
+            
             var names = [QName]()
-            func startDocument(_ document: Document) {
-            }
             
-            func endDocument(_ document: Document) {
-                
-            }
-            
-            func startElement(_ element: Element, from document: Document) {
+            override func startElement(_ element: Element, from document: Document) {
                 names.append(element.name())
-            }
-            
-            func endElement(_ element: Element, from document: Document) {
-                
-            }
-            
-            func textNode(_ textNode: TextNode, from document: Document) {
-                
-            }
-            
-            func cdata(_ cdata: CDATANode, from document: Document) {
-                
-            }
-            
-            func comment(_ comment: CommentNode, from document: Document) {
-                
             }
             
         }
@@ -64,7 +43,11 @@ class DOMTests: XCTestCase {
             return
         }
         let handler = Handler()
-        xml.document().traverse(handler: handler)
+        do {
+            try xml.document().traverse(handler)
+        } catch {
+            XCTFail("\(error)")
+        }
         XCTAssertTrue(handler.names.contains(QName("Name", uri: "http://uri.etsi.org/02231/v2#")))
     }
 }
