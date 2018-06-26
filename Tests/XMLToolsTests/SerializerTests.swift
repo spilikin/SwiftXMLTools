@@ -11,7 +11,7 @@ import XCTest
 class SerializerTests: XCTestCase {
 
     func testSerializeWithIndentAndParse() {
-        let xmlLocation = "https://raw.githubusercontent.com/spilikin/SwiftXMLTools/feature/encode/Testfiles/xmldsig-core-schema.xsd"
+        let xmlLocation = "https://raw.githubusercontent.com/spilikin/SwiftXMLTools/master/Testfiles/xmldsig-core-schema.xsd"
         let parser = XMLTools.Parser()
         let xml: XMLTools.Selection
         
