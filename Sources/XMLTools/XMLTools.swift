@@ -55,7 +55,7 @@ struct NamespaceContext {
 
 }
 
-struct QName: Hashable {
+struct QName: Hashable, CustomStringConvertible {
     
     let localName: String
     let namespaceURI: String
@@ -89,6 +89,19 @@ struct QName: Hashable {
     static func qn(_ localName: String, uri namespaceURI: String) -> QName {
         return QName(localName, uri: namespaceURI)
     }
+    
+    var description: String {
+        get {
+            if namespaceURI != "" {
+                return "{\(namespaceURI)}\(localName)"
+            } else if localName != "" {
+                return localName
+            } else {
+                return "#anonymous"
+            }
+        }
+    }
+
 }
 
 extension QName {

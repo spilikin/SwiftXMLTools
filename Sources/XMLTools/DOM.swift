@@ -94,7 +94,7 @@ class Element: NamedNode {
     
 }
 
-class TextNode: Node, Hashable {
+class TextNode: Node {
     let value : String
     
     init (parent: Node, value: String) {
@@ -102,17 +102,30 @@ class TextNode: Node, Hashable {
         super.init(parent: parent)
     }
     
-    static func == (lhs: TextNode, rhs: TextNode) -> Bool {
-        return lhs.value == rhs.value
-    }
+}
+
+class CommentNode: Node {
+    let value : String
     
-    var hashValue: Int {
-        return value.hashValue
+    init (parent: Node, value: String) {
+        self.value = value
+        super.init(parent: parent)
     }
     
 }
 
+class CDATANode : TextNode {
+    
+}
+
 class Document: Node {
+    // only support XML 1.0
+    let version = "1.0"
+    // default encoding is UTF-8
+    var encoding = String.Encoding.utf8
+    // Document is not standalone by default
+    var standalone = false
+    
     var documentElement : Element?
     var namespaceContext = NamespaceContext()
     
@@ -132,5 +145,6 @@ class Document: Node {
         documentElement = element
         return element
     }
-    
+        
 }
+
