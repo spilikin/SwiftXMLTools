@@ -1,4 +1,4 @@
-# XMLTools
+# XMLTools for Swift
 
 ![Swift 4.0+](https://img.shields.io/badge/Swift-4.0+-orange.svg)
 ![license](https://img.shields.io/github/license/mashape/apistatus.svg)
