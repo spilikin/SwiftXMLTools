@@ -70,11 +70,11 @@ final class XMLToolsTests: XCTestCase {
             return
         }
         
-        xml.namespaceContext.prefix("tsl", uri: "http://uri.etsi.org/02231/v2#")
+        xml.namespaceContext.declare("tsl", uri: "http://uri.etsi.org/02231/v2#")
         print(xml["tsl:TrustServiceStatusList", "tsl:SchemeInformation", "tsl:TSLType"].text)
         // prints http://uri.etsi.org/TrstSvc/TrustedList/TSLType/EUlistofthelists
 
-        xml.namespaceContext.noprefix("http://uri.etsi.org/02231/v2#")
+        xml.namespaceContext.declare(withNoPrefix: "http://uri.etsi.org/02231/v2#")
         print(xml["TrustServiceStatusList", "SchemeInformation", "TSLType"].text)
         // also prints http://uri.etsi.org/TrstSvc/TrustedList/TSLType/EUlistofthelists
 

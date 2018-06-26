@@ -28,7 +28,7 @@ class LOTLTests: XCTestCase {
     
     func testNamespaces() {
         
-        lotl.namespaceContext.noprefix(.tsl)
+        lotl.namespaceContext.declare(withNoPrefix: .tsl)
         XCTAssertEqual(1, lotl["TrustServiceStatusList"].count)
         XCTAssertEqual(NamespaceDeclaration.tsl.uri, lotl["TrustServiceStatusList"].name().namespaceURI)
         XCTAssertEqual("ID0001", lotl["TrustServiceStatusList"].attr("Id").text)
@@ -46,6 +46,10 @@ class LOTLTests: XCTestCase {
         XCTAssertEqual(20, lotl.descendants(.qn("CertDigest", xmlns: .xades)).select(.qn("DigestValue", xmlns: .ds)).data?.endIndex)
         XCTAssertEqual(20, lotl.descendants(.qn("CertDigest", xmlns: .xades)).select(XMLDSig.DigestValue).data?.endIndex)
 
+        lotl.namespaceContext.declare("tsl", uri: "http://uri.etsi.org/02231/v2#")
+        
+        XCTAssertEqual(1, lotl["tsl:TrustServiceStatusList"].attr(QName("Id")).count)
+        
         /*
          xmlns="http://uri.etsi.org/02231/v2#" tsl
          xmlns:ns2="http://www.w3.org/2000/09/xmldsig#" ds

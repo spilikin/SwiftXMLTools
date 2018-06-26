@@ -7,9 +7,21 @@ enum ParserError: Error {
     case parseError(lineNumber: Int, columnNumber: Int, cause: Error?)
 }
 
-struct Parser {
+class Parser {
+    struct Options {
+        // when set to true the parser will trim whitespaces and ommit the whitespace-only text nodes
+        var trimWhitespaces = true
+        // when set to true the parser will preserve the namespace contexts of the source document (mapping prefix to uri)
+        var preserveSourceNamespaceContexts = false
+    }
+
+    public var options = Options()
+    
+    init() {
+    }
+
     func parse(data: Data) throws -> Selection {
-        let delegate = ParserDelegate()
+        let delegate = ParserDelegate(options: options)
         let parser = XMLParser(data: data)
         parser.shouldProcessNamespaces = true
         parser.shouldReportNamespacePrefixes = true
@@ -48,15 +60,16 @@ struct Parser {
 fileprivate class ParserDelegate:NSObject, XMLParserDelegate {
     fileprivate var document: Document
     private var currentElement: Element?
-    private var prefixMapping = [String:String]()
+    private var namespaceContext: NamespaceContext?
     fileprivate var parseError: Error?
     fileprivate var errorLineNumber = -1
     fileprivate var errorColumnNumber = -1
+    private let options:Parser.Options
     
-    override init() {
+    init(options: Parser.Options) {
+        self.options = options
         document = Document()
-        // https://www.w3.org/XML/1998/namespace
-        prefixMapping["xml"] = "https://www.w3.org/XML/1998/namespace"
+        namespaceContext = .defaultContext
     }
     
     func parser(_ parser: XMLParser, didStartElement elementName: String, namespaceURI: String?, qualifiedName qName: String?, attributes attributeDict: [String : String] = [:]) {
@@ -66,8 +79,10 @@ fileprivate class ParserDelegate:NSObject, XMLParserDelegate {
             currentElement = document.appendElement(QName(elementName, uri: namespaceURI!))
         }
 
-        prefixMapping.forEach { (k,v) in currentElement?.prefixMapping[k] = v }
-        prefixMapping.removeAll()
+        if namespaceContext != nil {
+            currentElement?.sourceNamespaceContext = NamespaceContext(copyOf: namespaceContext!)
+            namespaceContext = nil
+        }
         
         for (name, value) in attributeDict {
             let qname: XMLTools.QName
@@ -88,7 +103,7 @@ fileprivate class ParserDelegate:NSObject, XMLParserDelegate {
     private func resolveNamespaceURI(forPrefix prefix: String ) -> String? {
         var element = currentElement
         while (element != nil) {
-            if let uri = element?.prefixMapping[prefix] {
+            if let uri = element?.sourceNamespaceContext?[prefix] {
                 return uri
             }
             element = element?.parentNode as? Element
@@ -97,15 +112,22 @@ fileprivate class ParserDelegate:NSObject, XMLParserDelegate {
     }
     
     func parser(_ parser: XMLParser, foundCharacters string: String) {
-        let trimmed = string.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
-        if trimmed.count > 0 {
-            currentElement?.appendText(trimmed)
+        if options.trimWhitespaces {
+            let trimmed = string.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
+            if trimmed.count > 0 {
+                currentElement?.appendText(trimmed)
+            }
+        } else {
+            currentElement?.appendText(string)
         }
     }
     
     func parser(_ parser: XMLParser, didEndElement elementName: String, namespaceURI: String?, qualifiedName qName: String?) {
         if let parent = currentElement?.parentNode as? Element {
             currentElement = parent
+            if options.preserveSourceNamespaceContexts && currentElement?.sourceNamespaceContext != nil {
+                currentElement?.namespaceContext = currentElement?.sourceNamespaceContext
+            }
         } else {
             currentElement = nil
         }
@@ -115,7 +137,11 @@ fileprivate class ParserDelegate:NSObject, XMLParserDelegate {
     }
     
     func parser(_ parser: XMLParser, didStartMappingPrefix prefix: String, toURI namespaceURI: String) {
-        prefixMapping[prefix] = namespaceURI
+        if namespaceContext == nil {
+            // create empty namespace context
+            namespaceContext = NamespaceContext()
+        }
+        namespaceContext?[prefix] = namespaceURI
     }
     
     func parser(_ parser: XMLParser, parseErrorOccurred parseError: Error) {

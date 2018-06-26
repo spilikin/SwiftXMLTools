@@ -21,4 +21,33 @@ class DOMTests: XCTestCase {
         XCTAssertEqual("ccc", doc.documentElement?.attributes[QName("name1", uri: "urn:test")]?.value)
     }
 
+    func testTraversal() {
+        class Handler:DefaultDocumentHandler {
+            
+            var names = [QName]()
+            
+            override func startElement(_ element: Element, from document: Document) {
+                names.append(element.name())
+            }
+            
+        }
+        
+        let parser = XMLTools.Parser()
+        
+        let xml: XMLTools.Selection
+        do {
+            xml = try parser.parse(contentsOf: "https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml")
+        } catch {
+            print (error)
+            XCTFail("\(error)")
+            return
+        }
+        let handler = Handler()
+        do {
+            try xml.document().traverse(handler)
+        } catch {
+            XCTFail("\(error)")
+        }
+        XCTAssertTrue(handler.names.contains(QName("Name", uri: "http://uri.etsi.org/02231/v2#")))
+    }
 }
