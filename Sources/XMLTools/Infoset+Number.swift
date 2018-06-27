@@ -1,6 +1,6 @@
 import Foundation
 
-extension Selection {
+extension Infoset {
     
     var intValue:Int {
         get {

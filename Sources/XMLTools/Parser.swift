@@ -20,7 +20,7 @@ class Parser {
     init() {
     }
 
-    func parse(data: Data) throws -> Selection {
+    func parse(data: Data) throws -> Infoset {
         let delegate = ParserDelegate(options: options)
         let parser = XMLParser(data: data)
         parser.shouldProcessNamespaces = true
@@ -30,24 +30,24 @@ class Parser {
             throw ParserError.parseError(lineNumber: delegate.errorLineNumber, columnNumber: delegate.errorColumnNumber, cause: delegate.parseError)
         }
         
-        return Selection(delegate.document)
+        return Infoset(delegate.document)
     }
     
-    func parse(string: String, using encoding:String.Encoding) throws -> Selection {
+    func parse(string: String, using encoding:String.Encoding) throws -> Infoset {
         guard let data = string.data(using: encoding) else {
             throw ParserError.malformedString
         }
         return try parse(data: data)
     }
     
-    func parse(contentsOf url: URL) throws -> Selection {
+    func parse(contentsOf url: URL) throws -> Infoset {
         guard let data = try? Data(contentsOf: url) else {
             throw ParserError.contentNotAvailable(url: url)
         }
         return try parse(data: data)
     }
     
-    func parse(contentsOf urlString: String) throws -> Selection {
+    func parse(contentsOf urlString: String) throws -> Infoset {
         guard let url = URL(string: urlString) else {
             throw ParserError.malformedURL(urlString: urlString)
         }

@@ -13,7 +13,7 @@ class SerializerTests: XCTestCase {
     func testSerializeWithIndentAndParse() {
         let xmlLocation = "https://raw.githubusercontent.com/spilikin/SwiftXMLTools/master/Testfiles/xmldsig-core-schema.xsd"
         let parser = XMLTools.Parser()
-        let xml: XMLTools.Selection
+        let xml: XMLTools.Infoset
         
         do {
             xml = try parser.parse(contentsOf: xmlLocation)
@@ -44,7 +44,7 @@ class SerializerTests: XCTestCase {
     func testNamespaceSerializeAndParser() {
         let parser = XMLTools.Parser()
         parser.options.preserveSourceNamespaceContexts = true
-        let xml: XMLTools.Selection
+        let xml: XMLTools.Infoset
 
         do {
             xml = try parser.parse(string: NamespaceTests.namespaceXML, using: .utf8)

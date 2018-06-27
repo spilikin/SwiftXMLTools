@@ -36,7 +36,7 @@ class SelectTest: XCTestCase {
     </bookstore>
     """
     
-    var xml : Selection!
+    var xml : Infoset!
     
     override func setUp() {
         super.setUp()

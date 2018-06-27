@@ -1,14 +1,14 @@
 import Foundation
 
-public protocol XMLSructSubscript {}
-extension Int: XMLSructSubscript {}
-extension String: XMLSructSubscript {}
-extension XMLTools.QName: XMLSructSubscript {}
+public protocol InfosetSubscript {}
+extension Int: InfosetSubscript {}
+extension String: InfosetSubscript {}
+extension XMLTools.QName: InfosetSubscript {}
 
-class Selection : Sequence {
+class Infoset : Sequence {
     typealias XMLElement = XMLTools.Element
 
-    static let EMPTY = Selection()
+    static let EMPTY = Infoset()
 
     var selectedNodes: [Node]
     var parentDocument: Document
@@ -95,11 +95,11 @@ class Selection : Sequence {
         
     }
 
-    public func select() -> Selection {
-        return Selection(childNodes(), from: parentDocument)
+    public func select() -> Infoset {
+        return Infoset(childNodes(), from: parentDocument)
     }
 
-    public func select(_ names: String...) -> Selection {
+    public func select(_ names: String...) -> Infoset {
         var selection = self
         for name in names {
             selection = selection.select(name)
@@ -110,7 +110,7 @@ class Selection : Sequence {
         return selection
     }
 
-    public func select(_ qnames: QName...) -> Selection {
+    public func select(_ qnames: QName...) -> Infoset {
         var selection = self
         for qname in qnames {
             selection = selection.select(qname)
@@ -121,18 +121,18 @@ class Selection : Sequence {
         return selection
     }
 
-    public func item(_ index: Int) -> Selection {
+    public func item(_ index: Int) -> Infoset {
         if index < selectedNodes.count {
-            return Selection(selectedNodes[index])
+            return Infoset(selectedNodes[index])
         }
-        return Selection.EMPTY
+        return Infoset.EMPTY
     }
     
-    public func select(_ name: String) -> Selection {
+    public func select(_ name: String) -> Infoset {
         return select(resolveQName(name))
     }
 
-    public func select(_ qname: QName) -> Selection {
+    public func select(_ qname: QName) -> Infoset {
         var matches = [Node]()
         for node in selectedNodes {
             for child in node.childNodes {
@@ -141,10 +141,10 @@ class Selection : Sequence {
                 }
             }
         }
-        return Selection(matches, from: document())
+        return Infoset(matches, from: document())
     }
 
-    public func select(byPosition conditionMatch: (Int) -> Bool) -> Selection {
+    public func select(byPosition conditionMatch: (Int) -> Bool) -> Infoset {
         var pos = 0
         var matches = [Node]()
         for node in selectedNodes {
@@ -153,21 +153,21 @@ class Selection : Sequence {
             }
             pos = pos + 1
         }
-        return Selection(matches, from: document())
+        return Infoset(matches, from: document())
     }
 
-    public func select(_ conditionMatch: (Selection) -> Bool) -> Selection {
+    public func select(_ conditionMatch: (Infoset) -> Bool) -> Infoset {
         var matches = [Node]()
         for node in selectedNodes {
-            if conditionMatch(Selection(node)) {
+            if conditionMatch(Infoset(node)) {
                 matches.append(node)
             }
         }
-        return Selection(matches, from: document())
+        return Infoset(matches, from: document())
     }
 
-    public func selectNode() -> Selection {
-        return Selection(childNodes(), from: document())
+    public func selectNode() -> Infoset {
+        return Infoset(childNodes(), from: document())
     }
     
     /*
@@ -200,8 +200,8 @@ class Selection : Sequence {
         return parentDocument
     }
     
-    public func selectDocument() -> Selection {
-        return Selection(document())
+    public func selectDocument() -> Infoset {
+        return Infoset(document())
     }
     
     public func name() -> XMLTools.QName {
@@ -213,7 +213,7 @@ class Selection : Sequence {
         return XMLTools.QName("")
     }
     
-    public subscript (selector: XMLSructSubscript) -> Selection {
+    public subscript (selector: InfosetSubscript) -> Infoset {
         switch selector {
             case let index as Int:
                 return item(index)
@@ -222,11 +222,11 @@ class Selection : Sequence {
             case let qname as XMLTools.QName:
                 return select(qname)
             default:
-                return Selection.EMPTY
+                return Infoset.EMPTY
         }
     }
 
-    public subscript (selectors: XMLSructSubscript...) -> Selection {
+    public subscript (selectors: InfosetSubscript...) -> Infoset {
         var selection = self
         for selector in selectors {
             selection = selection[selector]
@@ -240,14 +240,14 @@ class Selection : Sequence {
         }
     }
     
-    public func last() -> Selection {
+    public func last() -> Infoset {
         if let lastNode = selectedNodes.last {
-            return Selection(lastNode)
+            return Infoset(lastNode)
         }
-        return Selection.EMPTY
+        return Infoset.EMPTY
     }
     
-    internal func merge(with otherSelection: Selection) {
+    internal func merge(with otherSelection: Infoset) {
         selectedNodes.append(contentsOf: otherSelection.selectedNodes)
     }
     
@@ -262,19 +262,19 @@ class Selection : Sequence {
 }
 
 struct SelectionIterator : IteratorProtocol {
-    typealias Element = Selection
+    typealias Element = Infoset
     
     var index = -1
     let nodes: [Node]
     
-    init(base: Selection) {
+    init(base: Infoset) {
         nodes = base.selectedNodes
     }
     
-    mutating func next() -> Selection? {
+    mutating func next() -> Infoset? {
         index = index + 1
         if index < nodes.count {
-            return Selection(nodes[index])
+            return Infoset(nodes[index])
         }
         return nil
     }
@@ -283,8 +283,8 @@ struct SelectionIterator : IteratorProtocol {
 
 extension XMLTools.Node {
     
-    func select() -> Selection {
-        return Selection(self)
+    func select() -> Infoset {
+        return Infoset(self)
     }
     
 }

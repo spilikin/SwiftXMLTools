@@ -12,7 +12,7 @@ class LOTLTests: XCTestCase {
 
     let lotlURL = "https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml"
     
-    var lotl : Selection!
+    var lotl : Infoset!
     
     override func setUp() {
         super.setUp()

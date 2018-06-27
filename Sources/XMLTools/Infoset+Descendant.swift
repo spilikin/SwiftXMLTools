@@ -1,16 +1,16 @@
 import Foundation
 
-extension Selection {
-    func descendants(_ name: String) -> Selection {
+extension Infoset {
+    func descendants(_ name: String) -> Infoset {
         return descendants(resolveQName(name))
     }
     
-    func descendants(_ qname: XMLTools.QName) -> Selection {
+    func descendants(_ qname: XMLTools.QName) -> Infoset {
         var matches = [Node]()
-        let selection = Selection([Node](), from: document())
+        let selection = Infoset([Node](), from: document())
         
         if selectedNodes.count == 0 {
-            return Selection.EMPTY
+            return Infoset.EMPTY
         }
         
         for node in selectedNodes {
@@ -24,12 +24,12 @@ extension Selection {
         return selection
     }
 
-    func descendants() -> Selection {
+    func descendants() -> Infoset {
         var matches = [Node]()
-        let selection = Selection([Node](), from: document())
+        let selection = Infoset([Node](), from: document())
         
         if selectedNodes.count == 0 {
-            return Selection.EMPTY
+            return Infoset.EMPTY
         }
         
         for node in selectedNodes {

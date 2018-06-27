@@ -1,6 +1,6 @@
 import Foundation
 
-extension Selection {
+extension Infoset {
     
     var data:Data? {
         get {

@@ -1,19 +1,19 @@
 import Foundation
 
-extension Selection {
+extension Infoset {
 
-    func attr(_ name: String) -> Selection {
+    func attr(_ name: String) -> Infoset {
         return attr(resolveQName(name, resolveDefaultNamespace: false))
     }
     
-    func attr(_ qname: XMLTools.QName) -> Selection {
+    func attr(_ qname: XMLTools.QName) -> Infoset {
         var matches = [Attribute]()
         for attr in attributeNodes() {
             if attr.name() == qname {
                 matches.append(attr)
             }
         }
-        return Selection(matches, from: document())
+        return Infoset(matches, from: document())
     }
     
     internal func attributeNodes() -> [Attribute]{
@@ -26,9 +26,9 @@ extension Selection {
         return attrs
     }
     
-    func attr() -> Selection {
+    func attr() -> Infoset {
         
-        return Selection(attributeNodes(), from: document())
+        return Infoset(attributeNodes(), from: document())
     }
 
 }

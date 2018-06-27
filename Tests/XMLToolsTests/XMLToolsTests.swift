@@ -37,7 +37,7 @@ final class XMLToolsTests: XCTestCase {
         """
         let parser = XMLTools.Parser()
         
-        let xml: XMLTools.Selection
+        let xml: XMLTools.Infoset
         do {
             xml = try parser.parse(string: xmlString, using: .utf8)
         } catch {
@@ -61,7 +61,7 @@ final class XMLToolsTests: XCTestCase {
     func testExample2() {
         let parser = XMLTools.Parser()
         
-        let xml: XMLTools.Selection
+        let xml: XMLTools.Infoset
         do {
             xml = try parser.parse(contentsOf: "https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml")
         } catch {

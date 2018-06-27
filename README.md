@@ -14,16 +14,16 @@ The problem with all projects I've found on GitHUB is that they only support the
 * Lightweight DOM implementation
 * XPath like access to XML node tree (including axis support)
 * Subscript and Sequence support (like all other libraries)
-* Datatypes Support (Text, Data, Int, Double, Bool)
+* Datatypes Support (e.g. Text, Data, Int, Double, Decimal)
 * Fully extensible to be used in specific use cases
 * Serializing XML Document to Data
-* _Under Development_: XML creation and manipulation,
+* _Under Development_: XML creation and manipulation
 
 # Parsing
 ```swift
 let parser = XMLTools.Parser()
 
-let xml: XMLTools.Selection
+let xml: XMLTools.Infoset
 do {
     xml = try parser.parse(contentsOf: "https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml")
 } catch {

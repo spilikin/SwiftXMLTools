@@ -15,6 +15,7 @@ class XMLRawEncoder {
 class XMLSerializer: DefaultDocumentHandler {
     struct Options {
         var indent = false
+        var omitXMLDeclaration = false
     }
 
     internal class State {
@@ -38,14 +39,15 @@ class XMLSerializer: DefaultDocumentHandler {
     private let encoding = String.Encoding.utf8
 
     override func startDocument(_ document: Document) {
-        write("<?xml version=").attributeValue(document.version)
-        write(" encoding=").attributeValue("UTF-8")
-        if document.standalone {
-            write(" standalone=\"true\"")
+        if !options.omitXMLDeclaration {
+            write("<?xml version=").attributeValue(document.version)
+            write(" encoding=").attributeValue("utf-8")
+            if document.standalone {
+                write(" standalone=\"true\"")
+            }
+            write("?>")
+            newLine()
         }
-        write("?>")
-        newLine()
-        
     }
     
     override func endDocument(_ document: Document) {

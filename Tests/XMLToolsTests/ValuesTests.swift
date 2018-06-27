@@ -9,7 +9,7 @@ import XCTest
 @testable import XMLTools
 
 class ValuesTests: XCTestCase {
-    var xml: XMLTools.Selection!
+    var xml: XMLTools.Infoset!
     
     override func setUp() {
         let doc = Document()

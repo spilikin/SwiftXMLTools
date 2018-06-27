@@ -57,7 +57,7 @@ class NamespaceTests: XCTestCase {
     func testSelectWithNamespaces() {
         let parser = XMLTools.Parser()
         
-        let xml: XMLTools.Selection
+        let xml: XMLTools.Infoset
         do {
             xml = try parser.parse(string: NamespaceTests.namespaceXML, using: .utf8)
         } catch  {
