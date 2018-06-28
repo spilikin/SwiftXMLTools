@@ -5,7 +5,7 @@ extension Int: InfosetSubscript {}
 extension String: InfosetSubscript {}
 extension XMLTools.QName: InfosetSubscript {}
 
-class Infoset : Sequence {
+public class Infoset : Sequence {
     typealias XMLElement = XMLTools.Element
 
     static let EMPTY = Infoset()
@@ -34,11 +34,11 @@ class Infoset : Sequence {
         }
     }
 
-    func makeIterator() -> SelectionIterator {
+    public func makeIterator() -> SelectionIterator {
         return SelectionIterator(base: self)
     }
     
-    var namespaceContext : NamespaceContext {
+    public var namespaceContext : NamespaceContext {
         get {
             return document().namespaceContext
         }
@@ -170,7 +170,7 @@ class Infoset : Sequence {
         return Infoset(childNodes(), from: document())
     }
         
-    public func document() -> XMLTools.Document {
+    public func document() -> Document {
         return parentDocument
     }
     
@@ -178,13 +178,13 @@ class Infoset : Sequence {
         return Infoset(document())
     }
     
-    public func name() -> XMLTools.QName {
+    public func name() -> QName {
         if selectedNodes.count == 1 {
             if let qname = selectedNodes[0].name() {
                 return qname
             }
         }
-        return XMLTools.QName("")
+        return QName("")
     }
     
     public subscript (selector: InfosetSubscript) -> Infoset {
@@ -235,8 +235,8 @@ class Infoset : Sequence {
 
 }
 
-struct SelectionIterator : IteratorProtocol {
-    typealias Element = Infoset
+public struct SelectionIterator : IteratorProtocol {
+    public typealias Element = Infoset
     
     var index = -1
     let nodes: [Node]
@@ -245,7 +245,7 @@ struct SelectionIterator : IteratorProtocol {
         nodes = base.selectedNodes
     }
     
-    mutating func next() -> Infoset? {
+    public mutating func next() -> Infoset? {
         index = index + 1
         if index < nodes.count {
             return Infoset(nodes[index])
@@ -257,7 +257,7 @@ struct SelectionIterator : IteratorProtocol {
 
 extension XMLTools.Node {
     
-    func select() -> Infoset {
+    public func select() -> Infoset {
         return Infoset(self)
     }
     
