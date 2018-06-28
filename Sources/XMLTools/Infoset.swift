@@ -169,33 +169,7 @@ class Infoset : Sequence {
     public func selectNode() -> Infoset {
         return Infoset(childNodes(), from: document())
     }
-    
-    /*
-    public func child(_ index: Int) -> Selection {
-        let children = childNodes()
-        if index < children.count {
-            return Selection(children[index])
-        }
-        return Selection.EMPTY
-    }
-    
-    public func child(_ name: String) -> Selection {
-        return child(resolveQName(name))
-    }
-
-    public func child(_ qname: QName) -> Selection {
-        var matches = [Node]()
-        for node in selectedNodes {
-            for child in node.childNodes {
-                if child.name() == qname {
-                    matches.append(child)
-                }
-            }
-        }
-        return Selection(matches, from: document())
-    }
-    */
-    
+        
     public func document() -> XMLTools.Document {
         return parentDocument
     }

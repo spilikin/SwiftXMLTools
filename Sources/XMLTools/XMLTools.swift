@@ -1,4 +1,4 @@
-struct NamespaceDeclaration {
+public struct NamespaceDeclaration {
     
     let prefix: String
     let uri: String
@@ -16,9 +16,9 @@ extension NamespaceDeclaration {
     static let ds = NamespaceDeclaration("ds", uri: "http://www.w3.org/2000/09/xmldsig#")
     // XMLSchema
     static let xs = NamespaceDeclaration("xs", uri: "http://www.w3.org/2001/XMLSchema")
-
+    // XML Schema instance
+    static let xsi = NamespaceDeclaration("xsi", uri: "http://www.w3.org/2001/XMLSchema-instance")
     
-
 }
 
 class NamespaceContext {
@@ -102,7 +102,7 @@ class NamespaceContext {
     }
 }
 
-struct QName: Hashable, CustomStringConvertible {
+public struct QName: Hashable, CustomStringConvertible {
     
     let localName: String
     let namespaceURI: String
@@ -121,23 +121,23 @@ struct QName: Hashable, CustomStringConvertible {
         self.init(localName, uri: declaration.uri)
     }
     
-    static func == (lhs: QName, rhs: QName) -> Bool {
+    public static func == (lhs: QName, rhs: QName) -> Bool {
         return lhs.localName == rhs.localName && lhs.namespaceURI == rhs.namespaceURI
     }
     
-    var hashValue: Int {
+    public var hashValue: Int {
         return localName.hashValue ^ namespaceURI.hashValue
     }
 
-    static func qn(_ localName: String, xmlns declaration: NamespaceDeclaration) -> QName {
+    public static func qn(_ localName: String, xmlns declaration: NamespaceDeclaration) -> QName {
         return QName(localName, xmlns: declaration)
     }
     
-    static func qn(_ localName: String, uri namespaceURI: String) -> QName {
+    public static func qn(_ localName: String, uri namespaceURI: String) -> QName {
         return QName(localName, uri: namespaceURI)
     }
     
-    var description: String {
+    public var description: String {
         get {
             if namespaceURI != "" {
                 return "{\(namespaceURI)}\(localName)"
