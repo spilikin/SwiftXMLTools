@@ -7,16 +7,12 @@
 
 import Foundation
 
-class XMLRawEncoder {
-    var data = Data()
-    
+public enum SerializerOption {
+    case indent
+    case omitXMLDeclaration
 }
 
-class XMLSerializer: DefaultDocumentHandler {
-    struct Options {
-        var indent = false
-        var omitXMLDeclaration = false
-    }
+class Serializer: DefaultDocumentHandler {
 
     internal class State {
         let element:Element?
@@ -32,14 +28,26 @@ class XMLSerializer: DefaultDocumentHandler {
             self.element = element
         }
     }
-    public var options = Options()
     public var data = Data()
     private var identLevel = 0
     private var stateStack = [State]()
     private let encoding = String.Encoding.utf8
+    private var optionIndent = false
+    private var optionOmitXMLDeclaration = false
 
+    init (_ options: [SerializerOption]) {
+        
+        if options.contains(.indent) {
+            optionIndent = true
+        }
+        
+        if options.contains(.omitXMLDeclaration) {
+            optionOmitXMLDeclaration = true
+        }
+    }
+    
     override func startDocument(_ document: Document) {
-        if !options.omitXMLDeclaration {
+        if !optionOmitXMLDeclaration {
             write("<?xml version=").attributeValue(document.version)
             write(" encoding=").attributeValue("utf-8")
             if document.standalone {
@@ -76,13 +84,13 @@ class XMLSerializer: DefaultDocumentHandler {
     override func startElement(_ element: Element, from document: Document) {
         if state.element != nil && state.isEmpty {
             write(">")
-            if options.indent {
+            if optionIndent {
                 newLine()
                 write(indentString())
             }
         }
         if state.element != nil && state.hasChildElements {
-            if options.indent {
+            if optionIndent {
                 newLine()
                 write(indentString())
             }
@@ -92,7 +100,9 @@ class XMLSerializer: DefaultDocumentHandler {
         write("<")
         if (element.name().namespaceURI != "") {
             let prefix = assureNamespaceDeclaration(element.name().namespaceURI, in:element)
-            write(prefix).write(":")
+            if prefix != "" {
+                write(prefix).write(":")
+            }
         }
         write(element.name().localName)
         
@@ -146,15 +156,16 @@ class XMLSerializer: DefaultDocumentHandler {
         if state.isEmpty {
             write("/>")
         } else {
-            if options.indent && state.hasChildElements {
+            if optionIndent && state.hasChildElements {
                 newLine()
                 write(indentString())
             }
             write("</")
             if (element.name().namespaceURI != "") {
                 let prefix = element.resolvePrefix(forURI: element.name().namespaceURI)!
-                write(prefix).write(":")
-
+                if prefix != "" {
+                    write(prefix).write(":")
+                }
             }
             write(element.name().localName).write(">")
         }
@@ -193,7 +204,7 @@ class XMLSerializer: DefaultDocumentHandler {
     }
     
     @discardableResult
-    public func write(_ str:String) -> XMLSerializer {
+    public func write(_ str:String) -> Serializer {
         if let strdata = str.data(using:encoding) {
             data.append(strdata)
         }
@@ -201,7 +212,7 @@ class XMLSerializer: DefaultDocumentHandler {
     }
     
     @discardableResult
-    public func text(_ str:String) -> XMLSerializer {
+    public func text(_ str:String) -> Serializer {
         var escaped = str.replacingOccurrences(of: "&", with: "&amp;", options: .literal)
         
         let map = ["<" : "&lt;", ">" : "&gt;"]
@@ -215,7 +226,7 @@ class XMLSerializer: DefaultDocumentHandler {
     }
     
     @discardableResult
-    public func attributeValue(_ str:String) -> XMLSerializer {
+    public func attributeValue(_ str:String) -> Serializer {
         write("\"")
         var escaped = str.replacingOccurrences(of: "&", with: "&amp;", options: .literal)
         
@@ -232,9 +243,8 @@ class XMLSerializer: DefaultDocumentHandler {
 
 extension Document {
     
-    public func data(indent: Bool = false) -> Data? {
-        let serializer = XMLSerializer()
-        serializer.options.indent = indent
+    public func data(_ options: SerializerOption...) -> Data? {
+        let serializer = Serializer(options)
         do {
             try traverse(serializer)
         } catch {

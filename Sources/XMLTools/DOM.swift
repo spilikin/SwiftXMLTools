@@ -27,7 +27,12 @@ public class Node {
 public class NamedNode : Node {
     let nodeName : QName
     
-    init (parent:Node, name: QName) {
+    internal init (name: QName) {
+        self.nodeName = name
+        super.init(parent: nil)
+    }
+    
+    internal init (parent:Node, name: QName) {
         self.nodeName = name
         super.init(parent: parent)
     }

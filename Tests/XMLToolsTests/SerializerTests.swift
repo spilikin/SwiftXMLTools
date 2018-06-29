@@ -13,6 +13,7 @@ class SerializerTests: XCTestCase {
     func testSerializeWithIndentAndParse() {
         let xmlLocation = "https://raw.githubusercontent.com/spilikin/SwiftXMLTools/master/Testfiles/xmldsig-core-schema.xsd"
         let parser = XMLTools.Parser()
+        parser.options.preserveSourceNamespaceContexts = true
         let xml: XMLTools.Infoset
         
         do {
@@ -22,8 +23,8 @@ class SerializerTests: XCTestCase {
             return
         }
 
-        xml.namespaceContext.declare(.xs)
-        if let indentedData = xml.document().data(indent: true) {
+        //xml.namespaceContext.declare(.xs)
+        if let indentedData = xml.document().data(.indent) {
             print (String(data: indentedData, encoding:.utf8)! )
 
             
@@ -53,7 +54,7 @@ class SerializerTests: XCTestCase {
             return
         }
 
-        if let indentedData = xml.document().data(indent: true) {
+        if let indentedData = xml.document().data(.indent) {
             print (String(data: indentedData, encoding:.utf8)! )
         
             do {

@@ -1,18 +1,18 @@
 import Foundation
 
-enum ParserError: Error {
+public enum ParserError: Error {
     case malformedURL(urlString:String)
     case contentNotAvailable(url: URL)
     case malformedString
     case parseError(lineNumber: Int, columnNumber: Int, cause: Error?)
 }
 
-class Parser {
-    struct Options {
+public class Parser {
+    public struct Options {
         // when set to true the parser will trim whitespaces and ommit the whitespace-only text nodes
-        var trimWhitespaces = true
+        public var trimWhitespaces = true
         // when set to true the parser will preserve the namespace contexts of the source document (mapping prefix to uri)
-        var preserveSourceNamespaceContexts = false
+        public var preserveSourceNamespaceContexts = false
     }
 
     public var options = Options()
@@ -20,7 +20,7 @@ class Parser {
     init() {
     }
 
-    func parse(data: Data) throws -> Infoset {
+    public func parse(data: Data) throws -> Infoset {
         let delegate = ParserDelegate(options: options)
         let parser = XMLParser(data: data)
         parser.shouldProcessNamespaces = true
@@ -33,21 +33,21 @@ class Parser {
         return Infoset(delegate.document)
     }
     
-    func parse(string: String, using encoding:String.Encoding) throws -> Infoset {
+    public func parse(string: String, using encoding:String.Encoding = .utf8) throws -> Infoset {
         guard let data = string.data(using: encoding) else {
             throw ParserError.malformedString
         }
         return try parse(data: data)
     }
     
-    func parse(contentsOf url: URL) throws -> Infoset {
+    public func parse(contentsOf url: URL) throws -> Infoset {
         guard let data = try? Data(contentsOf: url) else {
             throw ParserError.contentNotAvailable(url: url)
         }
         return try parse(data: data)
     }
     
-    func parse(contentsOf urlString: String) throws -> Infoset {
+    public func parse(contentsOf urlString: String) throws -> Infoset {
         guard let url = URL(string: urlString) else {
             throw ParserError.malformedURL(urlString: urlString)
         }
