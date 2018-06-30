@@ -1,10 +1,16 @@
 import Foundation
 
-public protocol InfosetSubscript {}
-extension Int: InfosetSubscript {}
-extension String: InfosetSubscript {}
-extension XMLTools.QName: InfosetSubscript {}
+public protocol InfosetSelector {}
+extension Int: InfosetSelector {}
+extension String: InfosetSelector {}
+extension XMLTools.QName: InfosetSelector {}
 
+/**
+ Provides high-level, extensible API to read and manipulate the XML structures.
+ Every Infoset is represented by zero or more "selected" context nodes (e.g. Document).
+ Most of the functions take effect on every context node, the same way XPath and XSLT
+ work.
+ */
 public class Infoset : Sequence {
     typealias XMLElement = XMLTools.Element
 
@@ -95,10 +101,17 @@ public class Infoset : Sequence {
         
     }
 
+    /**
+     Selects all child nodes of every context node
+     */
     public func select() -> Infoset {
         return Infoset(childNodes(), from: parentDocument)
     }
 
+    /**
+     Selects all child nodes of every context node which have the given (unqualified) name,
+     continues this operation for every name
+    */
     public func select(_ names: String...) -> Infoset {
         var selection = self
         for name in names {
@@ -110,6 +123,10 @@ public class Infoset : Sequence {
         return selection
     }
 
+    /**
+     Selects all child nodes of every context node which have the given qualified name,
+     repeats this operation for every given qname
+     */
     public func select(_ qnames: QName...) -> Infoset {
         var selection = self
         for qname in qnames {
@@ -121,6 +138,21 @@ public class Infoset : Sequence {
         return selection
     }
 
+    public func select(_ selectors:InfosetSelector... ) -> Infoset {
+        return select(selectors)
+    }
+
+    public func select(_ selectors:[InfosetSelector]) -> Infoset {
+        var selection = self
+        for selector in selectors {
+            selection = selection.select(selector)
+        }
+        return selection
+    }
+    
+    /**
+     Returns n-th node of this infoset as the new infoset with only one node
+    */
     public func item(_ index: Int) -> Infoset {
         if index < selectedNodes.count {
             return Infoset(selectedNodes[index])
@@ -144,6 +176,19 @@ public class Infoset : Sequence {
         return Infoset(matches, from: document())
     }
 
+    public func select(_ selector: InfosetSelector) -> Infoset {
+        switch selector {
+        case let index as Int:
+            return item(index)
+        case let name as String:
+            return select(name)
+        case let qname as XMLTools.QName:
+            return select(qname)
+        default:
+            return Infoset.EMPTY
+        }
+    }
+    
     public func select(byPosition conditionMatch: (Int) -> Bool) -> Infoset {
         var pos = 0
         var matches = [Node]()
@@ -187,27 +232,18 @@ public class Infoset : Sequence {
         return QName("")
     }
     
-    public subscript (selector: InfosetSubscript) -> Infoset {
-        switch selector {
-            case let index as Int:
-                return item(index)
-            case let name as String:
-                return select(name)
-            case let qname as XMLTools.QName:
-                return select(qname)
-            default:
-                return Infoset.EMPTY
-        }
+    public subscript (selector: InfosetSelector) -> Infoset {
+        return select(selector)
     }
 
-    public subscript (selectors: InfosetSubscript...) -> Infoset {
-        var selection = self
-        for selector in selectors {
-            selection = selection[selector]
-        }
-        return selection
+    public subscript (selectors: InfosetSelector...) -> Infoset {
+        return select(selectors)
     }
 
+    public subscript (selectors: [InfosetSelector]) -> Infoset {
+        return select(selectors)
+    }
+    
     public var count: Int {
         get {
             return selectedNodes.count

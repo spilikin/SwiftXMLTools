@@ -18,7 +18,6 @@ extension NamespaceDeclaration {
     public static let xs = NamespaceDeclaration("xs", uri: "http://www.w3.org/2001/XMLSchema")
     // XML Schema instance
     public static let xsi = NamespaceDeclaration("xsi", uri: "http://www.w3.org/2001/XMLSchema-instance")
-    
 }
 
 public class NamespaceContext {
@@ -100,6 +99,15 @@ public class NamespaceContext {
     public func allURIs() -> Set<String> {
         return Set(ns.values)
     }
+    
+    public func remove(prefix:String) {
+        ns.removeValue(forKey: prefix)
+    }
+
+    public func remove(uri:String) {
+        ns = ns.filter { $1 != uri }
+    }
+
 }
 
 public struct QName: Hashable, CustomStringConvertible {

@@ -35,7 +35,7 @@ extension Infoset {
     }
     
     /**
-     Removes the currently selected nodes from their corresponding parent
+     Removes the currently selected nodes from their corresponding parent(s)
      */
     @discardableResult
     public func remove() -> Infoset {

@@ -3,23 +3,27 @@
 ![Swift 4.0+](https://img.shields.io/badge/Swift-4.0+-orange.svg)
 ![license](https://img.shields.io/github/license/mashape/apistatus.svg)
 
-```XMLTools``` provides hight level API to work with XML written entirely in Swift. It provides API to parse and serialize XML, supports XPath-like access to XML-Infosets including the manipulation of structure and values and has full namespace support.
+```XMLTools``` is a set APIs to work with XML written entirely in Swift programming language. It works  all platforms supporting Swift (e.g. macOS, iOS). XMLTools provides means to to parse, evaluate, manipulate and serialize complex XML structures.
 
-Since Apple only provides the low-level [XMLParser](https://developer.apple.com/documentation/foundation/xmlparser)
-on all Platforms (only MacOS has the more advanced API), there are a lot of Open-Source Projects providing such APIs, most notably [SWXMLHash](https://github.com/drmohundro/SWXMLHash) and [SwiftyXMLParser](https://github.com/yahoojapan/SwiftyXMLParser).
-
-The problem with all projects I've found on GitHUB is that they only support the simplest XML structures and queries. Most of them take inspiration from [SwiftyJSON](https://github.com/SwiftyJSON/SwiftyJSON) and handle XML as JSON. There are two issues with that approach: 1) most of legacy XML Systems use rather complex XML structures with heavy use of namespaces; 2) if someone creates the new and simple protocols they use JSON anyway.
-
-```XMLTools``` tries to close this gap and provides the "old school XML" using modern features of Swift programming language. It provides the following features:
+It provides the following features:
 
 * Full Namespaces and QNames support
 * Lightweight DOM implementation
 * XPath like access to XML node tree (including axes support)
 * Subscript and Sequence support (like all other libraries)
 * Datatypes Support (e.g. Text, Data, Int, Double, Decimal)
-* Fully extensible to be used in specific use cases
 * Serializing XML Document to Data
 * XML creation and manipulation
+* Fully extensible to be used in specific use cases (e.g. SOAP)
+
+## Motivation
+
+Since Apple only provides the low-level [XMLParser](https://developer.apple.com/documentation/foundation/xmlparser)
+on all it's Platforms (with exception of macOS, which has high level XML API), there are a lot of Open-Source Projects providing such APIs, most notably [SWXMLHash](https://github.com/drmohundro/SWXMLHash) and [SwiftyXMLParser](https://github.com/yahoojapan/SwiftyXMLParser).
+
+The problem with all projects I've found on GitHUB is that they only support the simplest XML structures and queries. Most of them take inspiration from [SwiftyJSON](https://github.com/SwiftyJSON/SwiftyJSON) and handle XML as JSON. There are two issues with that approach: 1) most of legacy XML Systems use rather complex XML structures with heavy use of namespaces; 2) if someone creates the new and simple protocols they use JSON anyway.
+
+```XMLTools``` tries to close this gap and provides the "old school XML" using modern features of Swift programming language.
 
 # Quick Start
 
@@ -41,7 +45,8 @@ print(xml["TrustServiceStatusList", "SchemeInformation", "TSLType"].text)
 
 # Integration
 ## Swift Package Manager
-```TODO```
+
+TODO
 
 # XPath-Like Selection API
 
@@ -149,7 +154,80 @@ do {
 | ```bookstore/book[starts-with(title,'Harry Potter')]```| ```xml["bookstore", "book"].select({ $0["title"].text.starts(with: "Harry Potter") })```|
 
 # Using namespaces
-TODO
+
+Consider the example from [Wikipedia article about WSDL](https://en.wikipedia.org/wiki/Web_Services_Description_Language)
+```swift
+let wsdl_source =
+"""
+<?xml version="1.0" encoding="UTF-8"?>
+<description xmlns="http://www.w3.org/ns/wsdl"
+             xmlns:tns="http://www.tmsws.com/wsdl20sample"
+             xmlns:whttp="http://schemas.xmlsoap.org/wsdl/http/"
+             xmlns:wsoap="http://schemas.xmlsoap.org/wsdl/soap/"
+             targetNamespace="http://www.tmsws.com/wsdl20sample">
+
+<documentation>
+    This is a sample WSDL 2.0 document.
+</documentation>
+
+<!-- Abstract type -->
+   <types>
+      <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+                xmlns="http://www.tmsws.com/wsdl20sample"
+                targetNamespace="http://www.example.com/wsdl20sample">
+
+         <xs:element name="request"> ... </xs:element>
+         <xs:element name="response"> ... </xs:element>
+      </xs:schema>
+   </types>
+
+<!-- Abstract interfaces -->
+   <interface name="Interface1">
+      <fault name="Error1" element="tns:response"/>
+      <operation name="Get" pattern="http://www.w3.org/ns/wsdl/in-out">
+         <input messageLabel="In" element="tns:request"/>
+         <output messageLabel="Out" element="tns:response"/>
+      </operation>
+   </interface>
+
+<!-- Concrete Binding Over HTTP -->
+   <binding name="HttpBinding" interface="tns:Interface1"
+            type="http://www.w3.org/ns/wsdl/http">
+      <operation ref="tns:Get" whttp:method="GET"/>
+   </binding>
+
+<!-- Concrete Binding with SOAP-->
+   <binding name="SoapBinding" interface="tns:Interface1"
+            type="http://www.w3.org/ns/wsdl/soap"
+            wsoap:protocol="http://www.w3.org/2003/05/soap/bindings/HTTP/"
+            wsoap:mepDefault="http://www.w3.org/2003/05/soap/mep/request-response">
+      <operation ref="tns:Get" />
+   </binding>
+
+<!-- Web Service offering endpoints for both bindings-->
+   <service name="Service1" interface="tns:Interface1">
+      <endpoint name="HttpEndpoint"
+                binding="tns:HttpBinding"
+                address="http://www.example.com/rest/"/>
+      <endpoint name="SoapEndpoint"
+                binding="tns:SoapBinding"
+                address="http://www.example.com/soap/"/>
+   </service>
+</description>
+"""
+let parser = XMLTools.Parser()
+
+let xml: XMLTools.Infoset
+do {
+    xml = try parser.parse(string: wsdl_source)
+} catch {
+    print (error)
+    XCTFail("\(error)")
+    return
+}
+
+```
+
 
 # Serializing XML
 ```swift
@@ -170,7 +248,7 @@ do {
 if let indentedData = xml.document().data(.indent) {
     print (String(data: indentedData, encoding:.utf8)! )
 } else {
-  print ("Cannot convert XML to Data")
+    print ("Cannot convert XML to Data")
 }
 
 
@@ -234,7 +312,7 @@ Should produce the following output:
 </bookstore>
 ```
 
-# Developing the library
+# Developing XMLTools
 
 ```XMLTools``` uses the Swift package manager
 ```
