@@ -228,6 +228,77 @@ do {
 
 ```
 
+Since we didn't specify any options when creating the "XMLTools.Parser" there are no namespace declarations in the current Infoset and every element must be accessed by using the qualified names:
+```swift
+print (xml[QName("description", uri: "http://www.w3.org/ns/wsdl"), QName("documentation", uri: "http://www.w3.org/ns/wsdl")].text)
+```
+
+Event if we make it shorter it's still not very easy to read:
+```swift
+let wsdlURI = "http://www.w3.org/ns/wsdl"
+print (xml[QName("description", uri: wsdlURI), QName("documentation", uri: wsdlURI)].text)
+```
+
+The better way is to declare the namespace. Please note, that even if the source XML has no prefix defined we still should access the elements and attributes by using the prefix defined by us. This was the code is independent of the source namespace prefixes:
+```swift
+// equivalent to xmlns:wsdl="http://www.w3.org/ns/wsdl"
+xml.namespaceContext.declare("wsdl", uri: "http://www.w3.org/ns/wsdl")
+print (xml["wsdl:description", "wsdl:documentation"].text)
+```
+
+If we want to access WSDL elements without the prefix we can do it this way:
+```swift
+// equivalent to xmlns="http://www.w3.org/ns/wsdl"
+xml.namespaceContext.declare(withNoPrefix: "http://www.w3.org/ns/wsdl")
+print (xml["description", "documentation"].text)
+```
+
+For full experience with ```XMLTools``` you can do the extensions:
+
+```swift
+// somewhere on file level
+extension NamespaceDeclaration {
+    public static let wsdl = NamespaceDeclaration("wsdl", uri: "http://www.w3.org/ns/wsdl")
+    public static let wsdl_soap = NamespaceDeclaration("wsoap", uri: "http://schemas.xmlsoap.org/wsdl/soap/")
+    public static let wsdl_http = NamespaceDeclaration("whttp", uri: "http://schemas.xmlsoap.org/wsdl/http/")
+}
+```
+
+```swift
+// declare the namespaces we want to use
+xml.namespaceContext.declare(.wsdl).declare(.wsdl_soap).declare(.wsdl_http)
+let http_binding = xml.descendants("wsdl:binding").select {
+    $0.attr("name").text == "HttpBinding"
+}
+print (http_binding["wsdl:operation"].attr("whttp:method").text) // "GET"
+
+let soap_binding = xml.descendants("wsdl:binding").select {
+    $0.attr("name").text == "SoapBinding"
+}
+print (soap_binding.attr("wsoap:protocol").text) // "http://www.w3.org/2003/05/soap/bindings/HTTP/"
+
+```
+
+And finally we can just be lazy and tell the parser to preserve all namespace declarations exactly as they appear in the XML source
+```swift
+let anotherParser = XMLTools.Parser()
+// tell the parser to preserve all namespace prefix declarations
+anotherParser.options.preserveSourceNamespaceContexts = true
+
+let another_xml: XMLTools.Infoset
+do {
+    another_xml = try anotherParser.parse(string: wsdl_source)
+} catch {
+    print (error)
+    XCTFail("\(error)")
+    return
+}
+
+print (another_xml["description"].name().namespaceURI) // "http://www.w3.org/ns/wsdl"
+XCTAssertEqual(another_xml["description"].name().namespaceURI, "http://www.w3.org/ns/wsdl")
+```
+
+
 
 # Serializing XML
 ```swift

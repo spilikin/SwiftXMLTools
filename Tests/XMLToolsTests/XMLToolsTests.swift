@@ -234,8 +234,24 @@ final class XMLToolsTests: XCTestCase {
         }
         print (soap_binding.attr("wsoap:protocol").text) // "http://www.w3.org/2003/05/soap/bindings/HTTP/"
         XCTAssertEqual(soap_binding.attr("wsoap:protocol").text, "http://www.w3.org/2003/05/soap/bindings/HTTP/")
+        
+        let anotherParser = XMLTools.Parser()
+        // tell the parser to preserve all namespace prefix declarations
+        anotherParser.options.preserveSourceNamespaceContexts = true
+        
+        let another_xml: XMLTools.Infoset
+        do {
+            another_xml = try anotherParser.parse(string: wsdl_source)
+        } catch {
+            print (error)
+            XCTFail("\(error)")
+            return
+        }
+        
+        print (another_xml["description"].name().namespaceURI) // "http://www.w3.org/ns/wsdl"
+        XCTAssertEqual(another_xml["description"].name().namespaceURI, "http://www.w3.org/ns/wsdl")
+
     }
-    
     
     static var allTests = [
         ("testExample1", testExample1),
