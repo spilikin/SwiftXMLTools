@@ -1,7 +1,7 @@
 public struct NamespaceDeclaration {
     
-    let prefix: String
-    let uri: String
+    public let prefix: String
+    public let uri: String
     
     public init (_ prefix:String, uri: String) {
         self.prefix = prefix
