@@ -3,9 +3,9 @@
 ![Swift 4.0+](https://img.shields.io/badge/Swift-4.0+-orange.svg)
 ![license](https://img.shields.io/github/license/mashape/apistatus.svg)
 
-```XMLTools``` is a set APIs to work with XML written entirely in Swift programming language. It works  all platforms supporting Swift (e.g. macOS, iOS). XMLTools provides means to to parse, evaluate, manipulate and serialize complex XML structures.
+``XMLTools`` is a set APIs to parse, evaluate, manipulate and serialize complex XML structures. It is written written entirely in Swift programming language and designed to work on  all platforms supporting Swift (e.g. macOS, iOS).
 
-It provides the following features:
+``XMLTOOLS`` provides the following features:
 
 * Full Namespaces and QNames support
 * Lightweight DOM implementation
@@ -23,7 +23,7 @@ on all it's Platforms (with exception of macOS, which has high level XML API), t
 
 The problem with all projects I've found on GitHUB is that they only support the simplest XML structures and queries. Most of them take inspiration from [SwiftyJSON](https://github.com/SwiftyJSON/SwiftyJSON) and handle XML as JSON. There are two issues with that approach: 1) most of legacy XML Systems use rather complex XML structures with heavy use of namespaces; 2) if someone creates the new and simple protocols they use JSON anyway.
 
-```XMLTools``` tries to close this gap and provides the "old school XML" using modern features of Swift programming language.
+``XMLTools`` tries to close this gap and provides the "old school XML" using modern features of Swift programming language.
 
 # Quick Start
 
@@ -50,7 +50,7 @@ TODO
 
 # XPath-Like Selection API
 
-Given the following Example XML based on [w3schools.com XPath Tutorial](https://www.w3schools.com/xml/xpath_syntax.asp)
+The following Example XML is based on [w3schools.com XPath Tutorial](https://www.w3schools.com/xml/xpath_syntax.asp)
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 
@@ -83,7 +83,7 @@ Given the following Example XML based on [w3schools.com XPath Tutorial](https://
 </bookstore>
 ```
 
-## Parse String to XMLTools.Selection
+## Parse String to Infoset
 ```swift
 let xmlString = """
 <?xml version="1.0" encoding="UTF-8"?>
@@ -118,7 +118,7 @@ let xmlString = """
 """
 let parser = XMLTools.Parser()
 
-let xml: XMLTools.Selection
+let xml: XMLTools.Infoset
 do {
     xml = try parser.parse(string: xmlString, using: .utf8)
 } catch {
@@ -239,7 +239,7 @@ let wsdlURI = "http://www.w3.org/ns/wsdl"
 print (xml[QName("description", uri: wsdlURI), QName("documentation", uri: wsdlURI)].text)
 ```
 
-The better way is to declare the namespace. Please note, that even if the source XML has no prefix defined we still should access the elements and attributes by using the prefix defined by us. This was the code is independent of the source namespace prefixes:
+The better way is to declare the namespace. Please note, that even if the source XML has no prefix defined we still should access the elements and attributes by using the prefix defined here. This way the code is independent of the source namespace prefixes, especially when sources are generated and use cryptic prefixes like ``ns0``:
 ```swift
 // equivalent to xmlns:wsdl="http://www.w3.org/ns/wsdl"
 xml.namespaceContext.declare("wsdl", uri: "http://www.w3.org/ns/wsdl")
@@ -253,7 +253,7 @@ xml.namespaceContext.declare(withNoPrefix: "http://www.w3.org/ns/wsdl")
 print (xml["description", "documentation"].text)
 ```
 
-For full experience with ```XMLTools``` you can do the extensions:
+Here is a more complex example demonstrating the extensibility of ```XMLTools``` API:
 
 ```swift
 // somewhere on file level
@@ -385,7 +385,8 @@ Should produce the following output:
 
 # Developing XMLTools
 
-```XMLTools``` uses the Swift package manager
+``XMLTools`` uses the Swift package manager
+
 ```
 cd SwiftXMLTools
 swift package generate-xcodeproj
