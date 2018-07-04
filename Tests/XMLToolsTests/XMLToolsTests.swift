@@ -1,5 +1,5 @@
 import XCTest
-@testable import XMLTools
+import XMLTools
 
 final class XMLToolsTests: XCTestCase {
     func testExample1() {
@@ -259,6 +259,15 @@ final class XMLToolsTests: XCTestCase {
         ("testExample3", testExample3),
     ]
 }
+
+extension Data {
+    public func sha256Hash() -> Data {
+        let transform = SecDigestTransformCreate(kSecDigestSHA2, 256, nil)
+        SecTransformSetAttribute(transform, kSecTransformInputAttributeName, self as CFTypeRef, nil)
+        return SecTransformExecute(transform, nil) as! Data
+    }
+}
+
 
 extension NamespaceDeclaration {
     public static let wsdl = NamespaceDeclaration("wsdl", uri: "http://www.w3.org/ns/wsdl")

@@ -2,7 +2,7 @@ import Foundation
 
 extension Infoset {
 
-    var text:String {
+    public var text:String {
         get {
             var result = ""
             for node in selectedNodes {

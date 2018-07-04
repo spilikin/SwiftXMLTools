@@ -2,11 +2,11 @@ import Foundation
 
 extension Infoset {
 
-    func attr(_ name: String) -> Infoset {
+    public func attr(_ name: String) -> Infoset {
         return attr(resolveQName(name, resolveDefaultNamespace: false))
     }
     
-    func attr(_ qname: XMLTools.QName) -> Infoset {
+    public func attr(_ qname: XMLTools.QName) -> Infoset {
         var matches = [Attribute]()
         for attr in attributeNodes() {
             if attr.name() == qname {
@@ -26,7 +26,7 @@ extension Infoset {
         return attrs
     }
     
-    func attr() -> Infoset {
+    public func attr() -> Infoset {
         
         return Infoset(attributeNodes(), from: document())
     }

@@ -1,6 +1,6 @@
 import XCTest
 import Foundation
-@testable import XMLTools
+import XMLTools
 
 
 class SelectTest: XCTestCase {

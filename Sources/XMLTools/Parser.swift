@@ -17,7 +17,7 @@ public class Parser {
 
     public var options = Options()
     
-    init() {
+    public init() {
     }
 
     public func parse(data: Data) throws -> Infoset {

@@ -1,11 +1,11 @@
 import Foundation
 
 extension Infoset {
-    func descendants(_ name: String) -> Infoset {
+    public func descendants(_ name: String) -> Infoset {
         return descendants(resolveQName(name))
     }
     
-    func descendants(_ qname: XMLTools.QName) -> Infoset {
+    public func descendants(_ qname: XMLTools.QName) -> Infoset {
         var matches = [Node]()
         let selection = Infoset([Node](), from: document())
         
@@ -24,7 +24,7 @@ extension Infoset {
         return selection
     }
 
-    func descendants() -> Infoset {
+    public func descendants() -> Infoset {
         var matches = [Node]()
         let selection = Infoset([Node](), from: document())
         

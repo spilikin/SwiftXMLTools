@@ -6,7 +6,7 @@
 //
 
 import XCTest
-@testable import XMLTools
+import XMLTools
 
 class ValuesTests: XCTestCase {
     var xml: XMLTools.Infoset!

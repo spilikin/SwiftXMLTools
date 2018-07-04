@@ -2,7 +2,7 @@ import Foundation
 
 extension Infoset {
     
-    var intValue:Int {
+    public var intValue:Int {
         get {
             return Int(text) ?? 0
         }
@@ -11,7 +11,7 @@ extension Infoset {
         }
     }
 
-    var doubleValue:Double {
+    public var doubleValue:Double {
         get {
             return Double(text) ?? 0.0
         }
@@ -20,7 +20,7 @@ extension Infoset {
         }
     }
     
-    var decimalValue:Decimal {
+    public var decimalValue:Decimal {
         get {
             return Decimal(string: text, locale: Locale(identifier: "en")) ?? 0
         }
