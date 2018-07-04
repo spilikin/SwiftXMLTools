@@ -2,7 +2,7 @@ import Foundation
 
 public class Node {
     let parentNode: Node?
-    var childNodes = [Node]()
+    public var childNodes = [Node]()
     
     init(parent: Node?) {
         self.parentNode = parent
@@ -168,16 +168,16 @@ public class Document: Node {
 
     var documentElement : Element?
     
-    init () {
+    public init () {
         super.init(parent: nil)
     }
     
     @discardableResult
-    func appendElement(_ name: String) -> Element {
+    public func appendElement(_ name: String) -> Element {
         return appendElement(QName(name))
     }
     
-    func appendElement(_ name: QName) -> Element {
+    public func appendElement(_ name: QName) -> Element {
         childNodes.removeAll()
         let element = Element(parent: self, name: name);
         element.namespaceContext = .defaultContext
@@ -187,7 +187,7 @@ public class Document: Node {
     }
     
     // the namespace context of the document is the one of it's root element
-    var namespaceContext : NamespaceContext {
+    public var namespaceContext : NamespaceContext {
         get {
             if let root = documentElement {
                 if root.namespaceContext == nil {
