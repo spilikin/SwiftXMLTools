@@ -12,12 +12,12 @@ extension XMLTools.QName: InfosetSelector {}
  work.
  */
 public class Infoset : Sequence {
-    typealias XMLElement = XMLTools.Element
+    public typealias XMLElement = XMLTools.Element
 
-    static let EMPTY = Infoset()
+    open static let EMPTY = Infoset()
 
-    var selectedNodes: [Node]
-    var parentDocument: Document
+    open var selectedNodes: [Node]
+    open var parentDocument: Document
     
     private init() {
         selectedNodes = [Node]()
@@ -53,7 +53,7 @@ public class Infoset : Sequence {
         }
     }
     
-    internal func childNodes() -> [Node] {
+    open func childNodes() -> [Node] {
         var result = [Node]()
         for node in selectedNodes {
             result.append(contentsOf: node.childNodes)
@@ -61,7 +61,7 @@ public class Infoset : Sequence {
         return result
     }
 
-    internal func selectedElements() -> [XMLElement] {
+    open func selectedElements() -> [XMLElement] {
         var result = [XMLElement]()
         for node in selectedNodes {
             if let element = node as? XMLElement {
@@ -257,15 +257,15 @@ public class Infoset : Sequence {
         return Infoset.EMPTY
     }
     
-    internal func merge(with otherSelection: Infoset) {
+    open func merge(with otherSelection: Infoset) {
         selectedNodes.append(contentsOf: otherSelection.selectedNodes)
     }
     
-    internal func append(_ node: XMLTools.Node) {
+    open func append(_ node: XMLTools.Node) {
         selectedNodes.append(node)
     }
 
-    internal func append(contentsOf nodes: [XMLTools.Node]) {
+    open func append(contentsOf nodes: [XMLTools.Node]) {
         selectedNodes.append(contentsOf: nodes)
     }
 
