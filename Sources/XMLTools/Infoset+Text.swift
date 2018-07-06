@@ -6,7 +6,9 @@ extension Infoset {
         get {
             var result = ""
             for node in selectedNodes {
-                result += nodeToText(node)
+                if let val = nodeToText(node) {
+                    result += val
+                }
             }
             return result
         }
@@ -19,5 +21,21 @@ extension Infoset {
             }
         }
     }
-    
+
+    public var stringValue:String? {
+        get {
+            var result:String? = nil
+            for node in selectedNodes {
+                let val = nodeToText(node)
+                if let val = val {
+                    if result == nil {
+                        result = val
+                    } else {
+                        result = result! + val
+                    }
+                }
+            }
+            return result
+        }
+    }
 }

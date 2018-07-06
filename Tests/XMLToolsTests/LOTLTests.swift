@@ -43,8 +43,8 @@ class LOTLTests: XCTestCase {
         XCTAssertEqual(1, lotl.descendants(.qn("Signature", xmlns: .ds)).count)
         
         // SHA1 Digest must have exact 20 Bytes (160 Bits)
-        XCTAssertEqual(20, lotl.descendants(.qn("CertDigest", xmlns: .xades)).select(.qn("DigestValue", xmlns: .ds)).data?.endIndex)
-        XCTAssertEqual(20, lotl.descendants(.qn("CertDigest", xmlns: .xades)).select(XMLDSig.DigestValue).data?.endIndex)
+        XCTAssertEqual(20, lotl.descendants(.qn("CertDigest", xmlns: .xades)).select(.qn("DigestValue", xmlns: .ds)).base64Data?.endIndex)
+        XCTAssertEqual(20, lotl.descendants(.qn("CertDigest", xmlns: .xades)).select(XMLDSig.DigestValue).base64Data?.endIndex)
 
         lotl.namespaceContext.declare("tsl", uri: "http://uri.etsi.org/02231/v2#")
         

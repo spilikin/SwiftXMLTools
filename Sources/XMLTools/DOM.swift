@@ -2,6 +2,7 @@ import Foundation
 
 public class Node {
     let parentNode: Node?
+    
     public var childNodes = [Node]()
     
     init(parent: Node?) {
@@ -115,6 +116,28 @@ public class Element: NamedNode {
         var element:Element? = self
         while (element != nil) {
             if let uri = element?.namespaceContext?.resolvePrefix(forURI: uri) {
+                return uri
+            }
+            element = element?.parentNode as? Element
+        }
+        return nil
+    }
+    
+    func resolveURIFromSource(forPrefix prefix: String ) -> String? {
+        var element:Element? = self
+        while (element != nil) {
+        if let uri = element?.sourceNamespaceContext?[prefix] {
+            return uri
+        }
+            element = element?.parentNode as? Element
+        }
+        return nil
+    }
+
+    func resolvePrefixFromSource(forURI uri: String ) -> String? {
+        var element:Element? = self
+        while (element != nil) {
+            if let uri = element?.sourceNamespaceContext?.resolvePrefix(forURI: uri) {
                 return uri
             }
             element = element?.parentNode as? Element

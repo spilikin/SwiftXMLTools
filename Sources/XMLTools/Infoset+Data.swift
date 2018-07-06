@@ -2,7 +2,7 @@ import Foundation
 
 extension Infoset {
     
-    public var data:Data? {
+    public var base64Data:Data? {
         get {
             return Data(base64Encoded: text)
         }

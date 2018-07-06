@@ -2,7 +2,7 @@ import Foundation
 
 extension Infoset {
     public func descendants(_ name: String) -> Infoset {
-        return descendants(resolveQName(name))
+        return descendants(safeResolveQName(name))
     }
     
     public func descendants(_ qname: XMLTools.QName) -> Infoset {

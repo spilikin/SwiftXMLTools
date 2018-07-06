@@ -14,7 +14,7 @@ extension Infoset {
      */
     @discardableResult
     public func appendElement(_ name: String) -> Infoset {
-        return appendElement(QName(name))
+        return appendElement(safeResolveQName(name))
     }
 
     /**
@@ -73,7 +73,7 @@ extension Infoset {
      */
     @discardableResult
     public func attr(_ name: String, setValue value:String) -> Infoset {
-        return attr(resolveQName(name), setValue: value)
+        return attr(safeResolveQName(name), setValue: value)
     }
 
     /**

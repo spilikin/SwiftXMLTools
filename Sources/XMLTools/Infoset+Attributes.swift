@@ -3,7 +3,7 @@ import Foundation
 extension Infoset {
 
     public func attr(_ name: String) -> Infoset {
-        return attr(resolveQName(name, resolveDefaultNamespace: false))
+        return attr(safeResolveQName(name, resolveDefaultNamespace: false))
     }
     
     public func attr(_ qname: XMLTools.QName) -> Infoset {

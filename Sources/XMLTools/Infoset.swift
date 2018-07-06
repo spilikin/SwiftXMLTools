@@ -71,7 +71,7 @@ public class Infoset : Sequence {
         return result
     }
     
-    internal func nodeToText(_ node: Node) -> String {
+    internal func nodeToText(_ node: Node) -> String? {
         var result = ""
         if let text = node as? TextNode {
             result += text.value
@@ -80,17 +80,22 @@ public class Infoset : Sequence {
                 result += attrVal
             }
         } else if let element = node as? XMLElement {
+            if element.childNodes.count == 0 {
+                return nil
+            }
             for child in element.childNodes {
-                result += nodeToText(child)
+                if let text = nodeToText(child) {
+                    result += text
+                }
             }
         }
         return result
     }
 
-    internal func resolveQName(_ name:String, resolveDefaultNamespace: Bool = true) -> QName {
+    internal func safeResolveQName(_ name:String, resolveDefaultNamespace: Bool = true) -> QName {
         if name.range(of: ":") != nil {
             let tuple = name.components(separatedBy: ":")
-            if let uri = namespaceContext[tuple[0]] {
+            if let uri = contextElement()?.resolveURI(forPrefix: tuple[0]) {
                 return QName(tuple[1], uri: uri)
             }
             return QName(tuple[1])
@@ -101,6 +106,35 @@ public class Infoset : Sequence {
         
     }
 
+    /**
+     Returns the context element of this infoset based on following rules:
+        - if document is selected return document element
+        - if single node is selected and it's an element - return it
+        - if single node is selected and it's not an element - returns the parent element
+        - if several nodes are selected returns the parent element of the first node
+        - in all other cases return nil
+     */
+    public func contextElement() -> XMLElement? {
+        if selectedNodes.count == 0 {
+            return nil
+        }
+        switch (selectedNodes[0]) {
+        case let doc as Document:
+            return doc.documentElement
+        case let element as XMLElement:
+            return element
+        default:
+            var node = selectedNodes[0]
+            while(node.parentNode != nil) {
+                if let element = node.parentNode as? XMLElement {
+                    return element
+                }
+                node = node.parentNode!
+            }
+            return nil
+        }
+    }
+    
     /**
      Selects all child nodes of every context node
      */
@@ -161,7 +195,7 @@ public class Infoset : Sequence {
     }
     
     public func select(_ name: String) -> Infoset {
-        return select(resolveQName(name))
+        return select(safeResolveQName(name))
     }
 
     public func select(_ qname: QName) -> Infoset {

@@ -53,4 +53,17 @@ class ValuesTests: XCTestCase {
         xml["root"].text = "98"
         XCTAssertEqual(98, xml["root"].intValue)
     }
+    
+    func testTextOptional() {
+        xml.appendElement("root").attr("a", setValue: "value_a")
+        xml["root"].appendElement("sub1").text = "subtext1"
+        xml["root"].appendElement("sub2")
+
+        XCTAssertEqual(xml["root"].attr("a").stringValue, "value_a")
+        XCTAssertEqual(xml["root"].attr("no_such_element").stringValue, nil)
+
+        XCTAssertEqual(xml["root", "sub1"].stringValue, "subtext1")
+        XCTAssertEqual(xml["root", "sub2"].stringValue, nil)
+
+    }
 }
