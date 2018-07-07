@@ -11,7 +11,10 @@ extension Infoset {
     
     public var qnameValue:QName? {
         get {
-            let name = text
+            guard let name = stringValue else {
+                return nil
+            }
+            
             if name.range(of: ":") != nil {
                 let tuple = name.components(separatedBy: ":")
                 if let uri = contextElement()?.resolveURI(forPrefix: tuple[0]) {

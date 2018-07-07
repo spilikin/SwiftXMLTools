@@ -33,6 +33,7 @@ class QNameTests: XCTestCase {
             XCTAssertEqual(xml["root", "element1"].attr("name").qnameValue, QName("name1", uri:"urn:a"))
             xml.namespaceContext.declare("a", uri:"urn:a")
             XCTAssertEqual(xml["root", "element1"].attr("name").qnameValue, QName("name1", uri:"urn:a"))
+            XCTAssertTrue(xml["root"].attr("no_such_attribute").qnameValue == nil)
         } catch {
             XCTFail("\(error)")
             return
