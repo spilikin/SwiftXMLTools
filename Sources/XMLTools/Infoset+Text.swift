@@ -37,5 +37,6 @@ extension Infoset {
             }
             return result
         }
+        // TODO: Implement set, setting to nil should remove the attribute (or even element?)
     }
 }

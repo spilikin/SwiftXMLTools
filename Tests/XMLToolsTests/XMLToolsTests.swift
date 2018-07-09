@@ -50,7 +50,7 @@ final class XMLToolsTests: XCTestCase {
         }
         
         // [24.99, 29.99, 39.95, 69.95]
-        let pricesDecimal = xml.descendants("book").select("price").map( { $0.decimalValue } )
+        let pricesDecimal = xml.descendants("book").select("price").map( { $0.number } )
         print (pricesDecimal)
 
         // ["Harry Potter: The Philosopher's Stone", "Harry Potter: The Chamber of Secrets"]

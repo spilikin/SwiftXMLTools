@@ -2,30 +2,66 @@ import Foundation
 
 extension Infoset {
     
-    public var intValue:Int {
+    internal var DecimalFormatter:NumberFormatter {
         get {
-            return Int(text) ?? 0
-        }
-        set (newValue) {
-            text = String(newValue)
+            let formatter = NumberFormatter()
+            formatter.locale = Locale(identifier: "en_US")
+            formatter.decimalSeparator = "."
+            formatter.thousandSeparator = ""
+            formatter.maximumFractionDigits = 10
+            print (formatter.maximumFractionDigits )
+            formatter.numberStyle = .decimal
+            return formatter
         }
     }
 
-    public var doubleValue:Double {
+    
+    public var intValue:Int? {
         get {
-            return Double(text) ?? 0.0
+            return Int(text)
         }
         set (newValue) {
-            text = String(newValue)
+            if let newValue = newValue {
+                text = String(newValue)
+            } else {
+                text = ""
+            }
+        }
+    }
+
+    public var doubleValue:Double? {
+        get {
+            return Double(text)
+        }
+        set (newValue) {
+            if let newValue = newValue {
+                text = String(newValue)
+            } else {
+                text = ""
+            }
         }
     }
     
-    public var decimalValue:Decimal {
+    public var decimalValue:Decimal? {
         get {
-            return Decimal(string: text, locale: Locale(identifier: "en")) ?? 0
+            return Decimal(string: text, locale: Locale(identifier: "en"))
         }
         set(newValue) {
-            text = newValue.description
+            if let newValue = newValue {
+                text = DecimalFormatter.string(from: newValue as NSDecimalNumber) ?? ""
+            } else {
+                text = ""
+            }
         }
     }
+    
+    public var number:Decimal {
+        get {
+            return Decimal(string: text, locale: Locale(identifier: "en_US")) ?? 0
+        }
+        set(newValue) {
+            text = DecimalFormatter.string(from: newValue as NSDecimalNumber) ?? "0"
+        }
+    }
+
 }

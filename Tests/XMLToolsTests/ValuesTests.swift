@@ -44,6 +44,10 @@ class ValuesTests: XCTestCase {
         XCTAssertEqual("24.99", xml["root"].text)
         xml["root"].text = "24.98"
         XCTAssertEqual(24.98, xml["root"].doubleValue)
+        let decimal:Decimal = 10000.09980
+        xml["root"].number = decimal
+        XCTAssertEqual(xml["root"].text, "10000.0998")
+        XCTAssertEqual(xml["root"].number, decimal)
     }
 
     func testInt() {

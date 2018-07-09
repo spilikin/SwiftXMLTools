@@ -80,12 +80,12 @@ class SelectTest: XCTestCase {
         // 10. //title[@lang='en']
         XCTAssertEqual(3, xml.descendants("title").select({ $0.attr("lang").text == "en" }).count )
         // 11. /bookstore/book[pages>300]
-        XCTAssertEqual(2, xml["bookstore", "book"].select({ $0["pages"].intValue > 300 }).count )
+        XCTAssertEqual(2, xml["bookstore", "book"].select({ $0["pages"].number > 300 }).count )
         // 11. /bookstore/book[price>35.00]
-        XCTAssertEqual(2, xml["bookstore", "book"].select({ $0["price"].decimalValue > 35 }).count )
+        XCTAssertEqual(2, xml["bookstore", "book"].select({ $0["price"].number > 35 }).count )
         // 12. /bookstore/book[price>40.00]/title
-        XCTAssertEqual("IT-Sicherheit: Konzepte - Verfahren - Protokolle", xml["bookstore", "book"].select({ $0["price"].doubleValue > 40 }).select("title").text)
-        XCTAssertEqual("IT-Sicherheit: Konzepte - Verfahren - Protokolle", xml["bookstore", "book"].select({ $0["price"].doubleValue > 40 })["title"].text)
+        XCTAssertEqual("IT-Sicherheit: Konzepte - Verfahren - Protokolle", xml["bookstore", "book"].select({ $0["price"].number > 40 }).select("title").text)
+        XCTAssertEqual("IT-Sicherheit: Konzepte - Verfahren - Protokolle", xml["bookstore", "book"].select({ $0["price"].number > 40 })["title"].text)
         // 13. *
         XCTAssertEqual(1, xml.select().count)
         // 13. /bookstore/book/title/@*

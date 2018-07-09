@@ -142,9 +142,9 @@ do {
 | ```/bookstore/book[position()<3]```| ```xml["bookstore", "book"].select(byPosition: { $0 < 2 })```|
 | ```//title[@lang]```| ```xml.descendants("title").select({ $0.attr("lang").text != "" })```|
 | ```//title[@lang='en']```| ```xml.descendants("title").select({ $0.attr("lang").text == "en" })```|
-| ```/bookstore/book[pages>300]```| ```xml["bookstore", "book"].select({ $0["pages"].intValue > 300 })```|
-| ```/bookstore/book[price>35.00]```| ```xml["bookstore", "book"].select({ $0["price"].decimalValue > 35 })```|
-| ```/bookstore/book[price>40.00]/title```| ```xml["bookstore", "book"].select({ $0["price"].doubleValue > 40 }).select("title")```|
+| ```/bookstore/book[pages>300]```| ```xml["bookstore", "book"].select({ $0["pages"].number > 300 })```|
+| ```/bookstore/book[price>35.00]```| ```xml["bookstore", "book"].select({ $0["price"].number > 35 })```|
+| ```/bookstore/book[price>40.00]/title```| ```xml["bookstore", "book"].select({ $0["price"].number > 40 }).select("title")```|
 | ```*```| ```xml.select()```|
 | ```/bookstore/book/title/@*```| ```xml["bookstore", "book", "title"].attr()```|
 | ```/bookstore/book/title[0]/node()```| ```xml["bookstore", "book", "title", 0].selectNode()```|
@@ -349,8 +349,8 @@ for book in bookstore {
         .appendElement("title")
         .manipulate{ $0.text = book.title; $0.attr("lang", setValue: book.lang) }
         .parent()
-        .appendElement("price").manipulate{ $0.decimalValue = book.price}.parent()
-        .appendElement("pages").manipulate{ $0.intValue = book.pages }
+        .appendElement("price").manipulate{ $0.number = book.price}.parent()
+        .appendElement("pages").manipulate{ $0.number = book.pages }
 }
 
 let xmlData = built_xml.document().data(.indent,.omitXMLDeclaration)

@@ -291,16 +291,24 @@ public class Infoset : Sequence {
         return Infoset.EMPTY
     }
     
-    open func merge(with otherSelection: Infoset) {
+    public func merge(with otherSelection: Infoset) {
         selectedNodes.append(contentsOf: otherSelection.selectedNodes)
     }
     
-    open func append(_ node: XMLTools.Node) {
+    public func append(_ node: XMLTools.Node) {
         selectedNodes.append(node)
     }
 
-    open func append(contentsOf nodes: [XMLTools.Node]) {
+    public func append(contentsOf nodes: [XMLTools.Node]) {
         selectedNodes.append(contentsOf: nodes)
+    }
+
+    public func wrap() -> Infoset? {
+        if count == 0 {
+            return nil
+        } else {
+            return self
+        }
     }
 
 }
