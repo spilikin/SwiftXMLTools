@@ -4,7 +4,7 @@ import XMLTools
 
 
 class SelectTest: XCTestCase {
-    let bookstore_xml = """
+    let bookstoreSourceXML = """
     <?xml version="1.0" encoding="UTF-8"?>
     
     <bookstore>
@@ -42,7 +42,7 @@ class SelectTest: XCTestCase {
         super.setUp()
         let parser = XMLTools.Parser()
         
-        guard let parsed = try? parser.parse(string: bookstore_xml, using: .utf8) else {
+        guard let parsed = try? parser.parse(string: bookstoreSourceXML, using: .utf8) else {
             XCTFail("Error: cant parse")
             return
         }

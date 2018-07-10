@@ -44,7 +44,7 @@ class ValuesTests: XCTestCase {
         XCTAssertEqual("24.99", xml["root"].text)
         xml["root"].text = "24.98"
         XCTAssertEqual(24.98, xml["root"].doubleValue)
-        let decimal:Decimal = 10000.09980
+        let decimal: Decimal = 10000.09980
         xml["root"].number = decimal
         XCTAssertEqual(xml["root"].text, "10000.0998")
         XCTAssertEqual(xml["root"].number, decimal)
@@ -57,7 +57,7 @@ class ValuesTests: XCTestCase {
         xml["root"].text = "98"
         XCTAssertEqual(98, xml["root"].intValue)
     }
-    
+
     func testTextOptional() {
         xml.appendElement("root").attr("a", setValue: "value_a")
         xml["root"].appendElement("sub1").text = "subtext1"

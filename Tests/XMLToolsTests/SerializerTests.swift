@@ -41,7 +41,7 @@ class SerializerTests: XCTestCase {
             XCTFail("Cannon convert XML to Data")
         }
     }
-    
+
     func testNamespaceSerializeAndParser() {
         let parser = XMLTools.Parser()
         parser.options.preserveSourceNamespaceContexts = true
@@ -55,14 +55,13 @@ class SerializerTests: XCTestCase {
         }
 
         if let indentedData = xml.document().data(.indent) {
-            print (String(data: indentedData, encoding:.utf8)! )
-        
+            print (String(data: indentedData, encoding: .utf8)! )
+
             do {
                 let reparsed = try parser.parse(data: indentedData)
                 XCTAssertEqual(xml.descendants().count, reparsed.descendants().count)
 
-                typealias QN = XMLTools.QName
-                XCTAssertEqual("Test1_1_1", reparsed[QN("level1")][QN("level1_1")][QN("level1_1_1", uri: "urn:dummy_A")].text)
+                XCTAssertEqual("Test1_1_1", reparsed[QName("level1")][QName("level1_1")][QName("level1_1_1", uri: "urn:dummy_A")].text)
                 
                 XCTAssertEqual("Test1_1_1Test1_1_2", reparsed["level1", "level1_1"].text)
                 XCTAssertEqual("Test1_2_1Test1_2_2", reparsed["level1", "level1_2"].text)

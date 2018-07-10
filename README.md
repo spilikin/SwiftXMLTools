@@ -157,7 +157,7 @@ do {
 
 Consider the example from [Wikipedia article about WSDL](https://en.wikipedia.org/wiki/Web_Services_Description_Language)
 ```swift
-let wsdl_source =
+let wsdlSourceXML =
 """
 <?xml version="1.0" encoding="UTF-8"?>
 <description xmlns="http://www.w3.org/ns/wsdl"
@@ -219,7 +219,7 @@ let parser = XMLTools.Parser()
 
 let xml: XMLTools.Infoset
 do {
-    xml = try parser.parse(string: wsdl_source)
+    xml = try parser.parse(string: wsdlSourceXML)
 } catch {
     print (error)
     XCTFail("\(error)")
@@ -258,24 +258,24 @@ Here is a more complex example demonstrating the extensibility of ```XMLTools```
 ```swift
 // somewhere on file level
 extension NamespaceDeclaration {
-    public static let wsdl = NamespaceDeclaration("wsdl", uri: "http://www.w3.org/ns/wsdl")
-    public static let wsdl_soap = NamespaceDeclaration("wsoap", uri: "http://schemas.xmlsoap.org/wsdl/soap/")
-    public static let wsdl_http = NamespaceDeclaration("whttp", uri: "http://schemas.xmlsoap.org/wsdl/http/")
+  public static let Wsdl = NamespaceDeclaration("wsdl", uri: "http://www.w3.org/ns/wsdl")
+  public static let WsdlSoap = NamespaceDeclaration("wsoap", uri: "http://schemas.xmlsoap.org/wsdl/soap/")
+  public static let WsdlHttp = NamespaceDeclaration("whttp", uri: "http://schemas.xmlsoap.org/wsdl/http/")
 }
 ```
 
 ```swift
 // declare the namespaces we want to use
-xml.namespaceContext.declare(.wsdl).declare(.wsdl_soap).declare(.wsdl_http)
-let http_binding = xml.descendants("wsdl:binding").select {
+xml.namespaceContext.declare(.Wsdl).declare(.WsdlSoap).declare(.WsdlHttp)
+let httpBinding = xml.descendants("wsdl:binding").select {
     $0.attr("name").text == "HttpBinding"
 }
-print (http_binding["wsdl:operation"].attr("whttp:method").text) // "GET"
+print (httpBinding["wsdl:operation"].attr("whttp:method").text) // "GET"
 
-let soap_binding = xml.descendants("wsdl:binding").select {
+let soapBinding = xml.descendants("wsdl:binding").select {
     $0.attr("name").text == "SoapBinding"
 }
-print (soap_binding.attr("wsoap:protocol").text) // "http://www.w3.org/2003/05/soap/bindings/HTTP/"
+print (soapBinding.attr("wsoap:protocol").text) // "http://www.w3.org/2003/05/soap/bindings/HTTP/"
 
 ```
 
@@ -285,17 +285,17 @@ let anotherParser = XMLTools.Parser()
 // tell the parser to preserve all namespace prefix declarations
 anotherParser.options.preserveSourceNamespaceContexts = true
 
-let another_xml: XMLTools.Infoset
+let anotherXML: XMLTools.Infoset
 do {
-    another_xml = try anotherParser.parse(string: wsdl_source)
+    anotherXML = try anotherParser.parse(string: wsdlSourceXML)
 } catch {
     print (error)
     XCTFail("\(error)")
     return
 }
 
-print (another_xml["description"].name().namespaceURI) // "http://www.w3.org/ns/wsdl"
-XCTAssertEqual(another_xml["description"].name().namespaceURI, "http://www.w3.org/ns/wsdl")
+print (anotherXML["description"].name().namespaceURI) // "http://www.w3.org/ns/wsdl"
+XCTAssertEqual(anotherXML["description"].name().namespaceURI, "http://www.w3.org/ns/wsdl")
 ```
 
 
@@ -340,12 +340,12 @@ let bookstore = [
     Book(title: "IT-Sicherheit: Konzepte - Verfahren - Protokolle", lang: "de", price: 69.95, pages: 932),
 ]
 
-let built_xml = Document().select()
+let builtXML = Document().select()
 
-built_xml.appendElement("bookstore")
+builtXML.appendElement("bookstore")
 
 for book in bookstore {
-    built_xml["bookstore"].appendElement("book")
+    builtXML["bookstore"].appendElement("book")
         .appendElement("title")
         .manipulate{ $0.text = book.title; $0.attr("lang", setValue: book.lang) }
         .parent()
@@ -353,7 +353,7 @@ for book in bookstore {
         .appendElement("pages").manipulate{ $0.number = book.pages }
 }
 
-let xmlData = built_xml.document().data(.indent,.omitXMLDeclaration)
+let xmlData = builtXML.document().data(.indent,.omitXMLDeclaration)
 
 print ( String(data: xmlData!, encoding: .utf8)! )
 ```

@@ -36,7 +36,7 @@ public class NamespaceContext {
     }
     
     init(copyOf context: NamespaceContext) {
-        context.ns.forEach { (k,v) in ns[k] = v }
+        context.ns.forEach { (key,value) in ns[key] = value }
     }
     
     @discardableResult
@@ -112,6 +112,7 @@ public class NamespaceContext {
 
 public struct QName: Hashable, CustomStringConvertible {
     
+    
     public let localName: String
     public let namespaceURI: String
     
@@ -160,13 +161,17 @@ public struct QName: Hashable, CustomStringConvertible {
 }
 
 extension QName {
-    // See https://www.w3.org/XML/1998/namespace
-    // Designed for identifying the human language used in the scope of the element to which it's attached.
-    public static let xml_lang = QName("lang", uri: NamespaceDeclaration.xml.uri)
-    // Designed to express whether or not the document's creator wishes white space to be considered as significant in the scope of the element to which it's attached.
-    public static let xml_space = QName("space", uri: NamespaceDeclaration.xml.uri)
-    // The XML Base specification (Second edition) describes a facility, similar to that of HTML BASE, for defining base URIs for parts of XML documents. It defines a single attribute, xml:base, and describes in detail the procedure for its use in processing relative URI refeferences.
-    public static let xml_base = QName("base", uri: NamespaceDeclaration.xml.uri)
-    // The xml:id specification defines a single attribute, xml:id, known to be of type ID independently of any DTD or schema.
-    public static let xml_id = QName("id", uri: NamespaceDeclaration.xml.uri)
+    /// See https://www.w3.org/XML/1998/namespace
+    /// Designed for identifying the human language used in the scope of the element to which it's attached.
+    public static let XmlLang = QName("lang", uri: NamespaceDeclaration.xml.uri)
+    /// Designed to express whether or not the document's creator wishes white space to be considered as
+    /// significant in the scope of the element to which it's attached.
+    public static let XmlSpace = QName("space", uri: NamespaceDeclaration.xml.uri)
+    /// The XML Base specification (Second edition) describes a facility, similar to that of HTML BASE,
+    /// for defining base URIs for parts of XML documents. It defines a single attribute, xml:base,
+    /// and describes in detail the procedure for its use in processing relative URI refeferences.
+    public static let XmlBase = QName("base", uri: NamespaceDeclaration.xml.uri)
+    /// The xml:id specification defines a single attribute, xml:id,
+    /// known to be of type ID independently of any DTD or schema.
+    public static let XmlId = QName("id", uri: NamespaceDeclaration.xml.uri)
 }

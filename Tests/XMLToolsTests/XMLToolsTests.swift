@@ -115,15 +115,14 @@ final class XMLToolsTests: XCTestCase {
         
         // print some useful info, notite the usage of pre-defined .xml_lang constant from QName
         print ("German TSL is:")
-        print(" - Operated by   : \(germanTSL[xpathOperatorName].select { $0.attr(.xml_lang).text == "en" } .text)")
-        print("    in Deutsch   : \(germanTSL[xpathOperatorName].select { $0.attr(.xml_lang).text == "de" } .text)")
+        print(" - Operated by   : \(germanTSL[xpathOperatorName].select { $0.attr(.XmlLang).text == "en" } .text)")
+        print("    in Deutsch   : \(germanTSL[xpathOperatorName].select { $0.attr(.XmlLang).text == "de" } .text)")
         print(" - TSL Located at: \( germanTSL["TSLLocation"].text )")
 
     }
 
-    public func testExampleNamespaces() {
-        let wsdl_source =
-        """
+    let wsdlSourceXML =
+    """
         <?xml version="1.0" encoding="UTF-8"?>
         <description xmlns="http://www.w3.org/ns/wsdl"
                      xmlns:tns="http://www.tmsws.com/wsdl20sample"
@@ -180,11 +179,13 @@ final class XMLToolsTests: XCTestCase {
            </service>
         </description>
         """
+
+    public func testExampleNamespaces() {
         let parser = XMLTools.Parser()
         
         let xml: XMLTools.Infoset
         do {
-            xml = try parser.parse(string: wsdl_source)
+            xml = try parser.parse(string: wsdlSourceXML)
         } catch {
             print (error)
             XCTFail("\(error)")
@@ -193,13 +194,18 @@ final class XMLToolsTests: XCTestCase {
 
         // parsed this way, no namespaces are declared in the Infoset,
         // we need to access them by speicifying the URI directly
-        print (xml[QName("description", uri: "http://www.w3.org/ns/wsdl"), QName("documentation", uri: "http://www.w3.org/ns/wsdl")].text)
-        XCTAssertEqual(xml[QName("description", uri: "http://www.w3.org/ns/wsdl"), QName("documentation", uri: "http://www.w3.org/ns/wsdl")].text, "This is a sample WSDL 2.0 document.")
+        print (xml[QName("description", uri: "http://www.w3.org/ns/wsdl"),
+                   QName("documentation", uri: "http://www.w3.org/ns/wsdl")].text)
+        XCTAssertEqual(xml[QName("description", uri: "http://www.w3.org/ns/wsdl"),
+                           QName("documentation", uri: "http://www.w3.org/ns/wsdl")].text,
+                       "This is a sample WSDL 2.0 document.")
 
         // let's make it shorter, but still very bulky
         let wsdlURI = "http://www.w3.org/ns/wsdl"
         print (xml[QName("description", uri: wsdlURI), QName("documentation", uri: wsdlURI)].text)
-        XCTAssertEqual(xml[QName("description", uri: wsdlURI), QName("documentation", uri: wsdlURI)].text, "This is a sample WSDL 2.0 document.")
+        XCTAssertEqual(xml[QName("description", uri: wsdlURI),
+                           QName("documentation", uri: wsdlURI)].text,
+                       "This is a sample WSDL 2.0 document.")
 
         // define namespace context with prefix
         // please note, that the source has no prefix and it still works!
@@ -221,35 +227,35 @@ final class XMLToolsTests: XCTestCase {
         xml.namespaceContext.remove(uri: "http://www.w3.org/ns/wsdl")
 
         // declare all namespaces we want to use
-        xml.namespaceContext.declare(.wsdl).declare(.wsdl_soap).declare(.wsdl_http)
+        xml.namespaceContext.declare(.Wsdl).declare(.WsdlSoap).declare(.WsdlHttp)
         xml.namespaceContext.declare("tns", uri: "http://www.tmsws.com/wsdl20sample")
-        let http_binding = xml.descendants("wsdl:binding").select {
+        let httpBinding = xml.descendants("wsdl:binding").select {
             $0.attr("name").text == "HttpBinding"
         }
-        print (http_binding["wsdl:operation"].attr("whttp:method").text) // "GET"
-        XCTAssertEqual(http_binding["wsdl:operation"].attr("whttp:method").text, "GET")
+        print (httpBinding["wsdl:operation"].attr("whttp:method").text) // "GET"
+        XCTAssertEqual(httpBinding["wsdl:operation"].attr("whttp:method").text, "GET")
 
-        let soap_binding = xml.descendants("wsdl:binding").select {
+        let soapBinding = xml.descendants("wsdl:binding").select {
             $0.attr("name").text == "SoapBinding"
         }
-        print (soap_binding.attr("wsoap:protocol").text) // "http://www.w3.org/2003/05/soap/bindings/HTTP/"
-        XCTAssertEqual(soap_binding.attr("wsoap:protocol").text, "http://www.w3.org/2003/05/soap/bindings/HTTP/")
+        print (soapBinding.attr("wsoap:protocol").text) // "http://www.w3.org/2003/05/soap/bindings/HTTP/"
+        XCTAssertEqual(soapBinding.attr("wsoap:protocol").text, "http://www.w3.org/2003/05/soap/bindings/HTTP/")
         
         let anotherParser = XMLTools.Parser()
         // tell the parser to preserve all namespace prefix declarations
         anotherParser.options.preserveSourceNamespaceContexts = true
         
-        let another_xml: XMLTools.Infoset
+        let anotherXML: XMLTools.Infoset
         do {
-            another_xml = try anotherParser.parse(string: wsdl_source)
+            anotherXML = try anotherParser.parse(string: wsdlSourceXML)
         } catch {
             print (error)
             XCTFail("\(error)")
             return
         }
         
-        print (another_xml["description"].name().namespaceURI) // "http://www.w3.org/ns/wsdl"
-        XCTAssertEqual(another_xml["description"].name().namespaceURI, "http://www.w3.org/ns/wsdl")
+        print (anotherXML["description"].name().namespaceURI) // "http://www.w3.org/ns/wsdl"
+        XCTAssertEqual(anotherXML["description"].name().namespaceURI, "http://www.w3.org/ns/wsdl")
 
     }
     
@@ -260,17 +266,8 @@ final class XMLToolsTests: XCTestCase {
     ]
 }
 
-extension Data {
-    public func sha256Hash() -> Data {
-        let transform = SecDigestTransformCreate(kSecDigestSHA2, 256, nil)
-        SecTransformSetAttribute(transform, kSecTransformInputAttributeName, self as CFTypeRef, nil)
-        return SecTransformExecute(transform, nil) as! Data
-    }
-}
-
-
 extension NamespaceDeclaration {
-    public static let wsdl = NamespaceDeclaration("wsdl", uri: "http://www.w3.org/ns/wsdl")
-    public static let wsdl_soap = NamespaceDeclaration("wsoap", uri: "http://schemas.xmlsoap.org/wsdl/soap/")
-    public static let wsdl_http = NamespaceDeclaration("whttp", uri: "http://schemas.xmlsoap.org/wsdl/http/")
+    public static let Wsdl = NamespaceDeclaration("wsdl", uri: "http://www.w3.org/ns/wsdl")
+    public static let WsdlSoap = NamespaceDeclaration("wsoap", uri: "http://schemas.xmlsoap.org/wsdl/soap/")
+    public static let WsdlHttp = NamespaceDeclaration("whttp", uri: "http://schemas.xmlsoap.org/wsdl/http/")
 }

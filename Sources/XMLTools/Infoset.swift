@@ -11,20 +11,20 @@ extension XMLTools.QName: InfosetSelector {}
  Most of the functions take effect on every context node, the same way XPath and XSLT
  work.
  */
-public class Infoset : Sequence {
+public class Infoset: Sequence {
     public typealias XMLElement = XMLTools.Element
 
     open static let EMPTY = Infoset()
 
     open var selectedNodes: [Node]
     open var parentDocument: Document
-    
+
     private init() {
         selectedNodes = [Node]()
         parentDocument = Document()
     }
 
-    init(_ nodes: [Node], from document:Document) {
+    init(_ nodes: [Node], from document: Document) {
         selectedNodes = nodes
         parentDocument = document
     }
@@ -43,8 +43,8 @@ public class Infoset : Sequence {
     public func makeIterator() -> SelectionIterator {
         return SelectionIterator(base: self)
     }
-    
-    public var namespaceContext : NamespaceContext {
+
+    public var namespaceContext: NamespaceContext {
         get {
             return document().namespaceContext
         }
@@ -52,7 +52,7 @@ public class Infoset : Sequence {
             document().namespaceContext = context
         }
     }
-    
+
     open func childNodes() -> [Node] {
         var result = [Node]()
         for node in selectedNodes {
@@ -70,7 +70,7 @@ public class Infoset : Sequence {
         }
         return result
     }
-    
+
     internal func nodeToText(_ node: Node) -> String? {
         var result = ""
         if let text = node as? TextNode {
@@ -92,7 +92,7 @@ public class Infoset : Sequence {
         return result
     }
 
-    internal func safeResolveQName(_ name:String, resolveDefaultNamespace: Bool = true) -> QName {
+    internal func safeResolveQName(_ name: String, resolveDefaultNamespace: Bool = true) -> QName {
         if name.range(of: ":") != nil {
             let tuple = name.components(separatedBy: ":")
             if let uri = contextElement()?.resolveURI(forPrefix: tuple[0]) {
@@ -103,7 +103,6 @@ public class Infoset : Sequence {
             return QName(name, uri: namespaceContext.defaultURI!)
         }
         return QName(name)
-        
     }
 
     /**
@@ -118,14 +117,14 @@ public class Infoset : Sequence {
         if selectedNodes.count == 0 {
             return nil
         }
-        switch (selectedNodes[0]) {
+        switch selectedNodes[0] {
         case let doc as Document:
             return doc.documentElement
         case let element as XMLElement:
             return element
         default:
             var node = selectedNodes[0]
-            while(node.parentNode != nil) {
+            while node.parentNode != nil {
                 if let element = node.parentNode as? XMLElement {
                     return element
                 }
@@ -134,7 +133,7 @@ public class Infoset : Sequence {
             return nil
         }
     }
-    
+
     /**
      Selects all child nodes of every context node
      */
@@ -172,11 +171,11 @@ public class Infoset : Sequence {
         return selection
     }
 
-    public func select(_ selectors:InfosetSelector... ) -> Infoset {
+    public func select(_ selectors: InfosetSelector... ) -> Infoset {
         return select(selectors)
     }
 
-    public func select(_ selectors:[InfosetSelector]) -> Infoset {
+    public func select(_ selectors: [InfosetSelector]) -> Infoset {
         var selection = self
         for selector in selectors {
             selection = selection.select(selector)
@@ -230,7 +229,7 @@ public class Infoset : Sequence {
             if conditionMatch(pos) {
                 matches.append(node)
             }
-            pos = pos + 1
+            pos += 1
         }
         return Infoset(matches, from: document())
     }
@@ -248,15 +247,15 @@ public class Infoset : Sequence {
     public func selectNode() -> Infoset {
         return Infoset(childNodes(), from: document())
     }
-        
+
     public func document() -> Document {
         return parentDocument
     }
-    
+
     public func selectDocument() -> Infoset {
         return Infoset(document())
     }
-    
+
     public func name() -> QName {
         if selectedNodes.count == 1 {
             if let qname = selectedNodes[0].name() {
@@ -265,7 +264,7 @@ public class Infoset : Sequence {
         }
         return QName("")
     }
-    
+
     public subscript (selector: InfosetSelector) -> Infoset {
         return select(selector)
     }
@@ -277,24 +276,22 @@ public class Infoset : Sequence {
     public subscript (selectors: [InfosetSelector]) -> Infoset {
         return select(selectors)
     }
-    
+
     public var count: Int {
-        get {
-            return selectedNodes.count
-        }
+        return selectedNodes.count
     }
-    
+
     public func last() -> Infoset {
         if let lastNode = selectedNodes.last {
             return Infoset(lastNode)
         }
         return Infoset.EMPTY
     }
-    
+
     public func merge(with otherSelection: Infoset) {
         selectedNodes.append(contentsOf: otherSelection.selectedNodes)
     }
-    
+
     public func append(_ node: XMLTools.Node) {
         selectedNodes.append(node)
     }
@@ -313,18 +310,18 @@ public class Infoset : Sequence {
 
 }
 
-public struct SelectionIterator : IteratorProtocol {
+public struct SelectionIterator: IteratorProtocol {
     public typealias Element = Infoset
-    
+
     var index = -1
     let nodes: [Node]
-    
+
     init(base: Infoset) {
         nodes = base.selectedNodes
     }
-    
+
     public mutating func next() -> Infoset? {
-        index = index + 1
+        index += 1
         if index < nodes.count {
             return Infoset(nodes[index])
         }
@@ -334,9 +331,9 @@ public struct SelectionIterator : IteratorProtocol {
 }
 
 extension XMLTools.Node {
-    
+
     public func select() -> Infoset {
         return Infoset(self)
     }
-    
+
 }
