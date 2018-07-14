@@ -4,6 +4,7 @@
 //  
 //  Created on 28.06.18
 //
+// swiftlint:disable nesting function_body_length
 
 import XCTest
 import XMLTools
@@ -43,7 +44,6 @@ class BuilderTests: XCTestCase {
     </bookstore>
     """
 
-
     func testBuildDocument() {
 
         struct Book {
@@ -66,9 +66,9 @@ class BuilderTests: XCTestCase {
 
         for book in bookstore {
             builtXML["bookstore"].appendElement("book")
-                .appendElement("title").manipulate{ $0.text = book.title; $0.attr("lang", setValue: book.lang) } .parent()
-                .appendElement("price").manipulate{ $0.decimalValue = book.price}.parent()
-                .appendElement("pages").manipulate{ $0.intValue = book.pages }
+                .appendElement("title").manipulate { $0.text = book.title; $0.attr("lang", setValue: book.lang) } .parent()
+                .appendElement("price").manipulate { $0.decimalValue = book.price}.parent()
+                .appendElement("pages").manipulate { $0.intValue = book.pages }
         }
 
         let xmlData = builtXML.document().data(.indent, .omitXMLDeclaration)
@@ -156,7 +156,7 @@ class BuilderTests: XCTestCase {
         // rename all books to Fahrenheit 451
         xml["bookstore", "book", "title"].text = "Fahrenheit 451"
 
-        XCTAssertEqual(["Fahrenheit 451", "Fahrenheit 451", "Fahrenheit 451", "Fahrenheit 451"], xml["bookstore", "book", "title"].map{$0.text})
+        XCTAssertEqual(["Fahrenheit 451", "Fahrenheit 451", "Fahrenheit 451", "Fahrenheit 451"], xml["bookstore", "book", "title"].map {$0.text})
 
         XCTAssertEqual("de", xml["bookstore", "book", 3, "title"].attr("lang").text)
         xml["bookstore", "book", 3, "title"].attr("lang", setValue: "lv")

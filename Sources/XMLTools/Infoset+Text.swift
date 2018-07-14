@@ -2,7 +2,7 @@ import Foundation
 
 extension Infoset {
 
-    public var text:String {
+    public var text: String {
         get {
             var result = ""
             for node in selectedNodes {
@@ -22,9 +22,9 @@ extension Infoset {
         }
     }
 
-    public var stringValue:String? {
+    public var stringValue: String? {
         get {
-            var result:String? = nil
+            var result: String? = nil
             for node in selectedNodes {
                 let val = nodeToText(node)
                 if let val = val {

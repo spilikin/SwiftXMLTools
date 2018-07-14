@@ -25,7 +25,7 @@ class QNameTests: XCTestCase {
         do {
             let xml = try parser.parse(string: textXML)
             xml.namespaceContext.declare(withNoPrefix: "urn:noprefix")
-            xml.namespaceContext.declare("a", uri:"urn:other_a")
+            xml.namespaceContext.declare("a", uri: "urn:other_a")
             XCTAssertNotEqual(xml["root", "element1"].attr("name").qnameValue, QName("name1", uri: "urn:a"))
             XCTAssertEqual(xml["root", "element2"].attr("name").qnameValue, QName("name2", uri: "urn:b"))
             XCTAssertEqual(xml["root", "element2", "element3"].attr("name").qnameValue, QName("name3", uri: "urn:b"))

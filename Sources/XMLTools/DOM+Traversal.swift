@@ -62,17 +62,16 @@ public class DefaultDocumentHandler: DocumentHandler {
     
     public func processingInstruction(_ instruction: ProcessingInstruction, from document: Document) throws {
     }
-    
-    
+
 }
 
 extension Element {
-    internal func traverse(handler:DocumentHandler, document: Document) throws {
+    internal func traverse(handler: DocumentHandler, document: Document) throws {
         try handler.startElement(self, from: document)
         for node in childNodes {
             switch node {
             case let element as Element:
-                try element.traverse(handler:handler, document: document)
+                try element.traverse(handler: handler, document: document)
             case let textNode as TextNode:
                 try handler.textNode(textNode, from: document)
             case let cdata as CDATANode:
@@ -86,4 +85,3 @@ extension Element {
         try handler.endElement(self, from: document)
     }
 }
-

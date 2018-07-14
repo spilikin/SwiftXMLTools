@@ -26,4 +26,3 @@ let package = Package(
             dependencies: ["XMLTools"]),
     ]
 )
-

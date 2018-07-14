@@ -8,7 +8,6 @@
 import XCTest
 @testable import XMLTools
 
-
 class NamespaceTests: XCTestCase {
 
     func testNamespaces001() {
@@ -18,9 +17,8 @@ class NamespaceTests: XCTestCase {
             XCTFail("Error: cant parse")
             return
         }
-        
-        
-        XCTAssertEqual("http://example.org/namespace", doc.select().name().namespaceURI);
+
+        XCTAssertEqual("http://example.org/namespace", doc.select().name().namespaceURI)
     }
     
     func testNamespaces008() {
@@ -31,13 +29,11 @@ class NamespaceTests: XCTestCase {
             return
         }
         
-        typealias QN = XMLTools.QName
+        XCTAssertEqual(QName("bar"), xml["foo"]["bar"].name())
         
-        XCTAssertEqual(QN("bar"), xml["foo"]["bar"].name())
-        
-        XCTAssertEqual(xml["foo"]["bar"].attr(QN("attr", uri:"http://example.org/~wilbur")).text, "1")
-        XCTAssertEqual(xml["foo"]["bar"].attr(QN("attr", uri:"http://example.org/%7ewilbur")).text, "2")
-        XCTAssertEqual(xml["foo"]["bar"].attr(QN("attr", uri:"http://example.org/%7Ewilbur")).text, "3")
+        XCTAssertEqual(xml["foo"]["bar"].attr(QName("attr", uri: "http://example.org/~wilbur")).text, "1")
+        XCTAssertEqual(xml["foo"]["bar"].attr(QName("attr", uri: "http://example.org/%7ewilbur")).text, "2")
+        XCTAssertEqual(xml["foo"]["bar"].attr(QName("attr", uri: "http://example.org/%7Ewilbur")).text, "3")
     }
 
     public static let namespaceXML = """
@@ -60,14 +56,12 @@ class NamespaceTests: XCTestCase {
         let xml: XMLTools.Infoset
         do {
             xml = try parser.parse(string: NamespaceTests.namespaceXML, using: .utf8)
-        } catch  {
+        } catch {
             XCTFail("Error: cant parse \(error)")
             return
         }
-        
-        typealias QN = XMLTools.QName
-        
-        XCTAssertEqual("Test1_1_1", xml[QN("level1")][QN("level1_1")][QN("level1_1_1", uri: "urn:dummy_A")].text)
+
+        XCTAssertEqual("Test1_1_1", xml[QName("level1")][QName("level1_1")][QName("level1_1_1", uri: "urn:dummy_A")].text)
         
         XCTAssertEqual("Test1_1_1Test1_1_2", xml["level1", "level1_1"].text)
         XCTAssertEqual("Test1_2_1Test1_2_2", xml["level1", "level1_2"].text)

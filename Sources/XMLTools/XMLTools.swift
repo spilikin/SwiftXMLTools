@@ -3,7 +3,7 @@ public struct NamespaceDeclaration {
     public let prefix: String
     public let uri: String
     
-    public init (_ prefix:String, uri: String) {
+    public init (_ prefix: String, uri: String) {
         self.prefix = prefix
         self.uri = uri
     }
@@ -11,37 +11,35 @@ public struct NamespaceDeclaration {
 
 extension NamespaceDeclaration {
     // See https://www.w3.org/XML/1998/namespace
-    public static let xml = NamespaceDeclaration("xml", uri:"https://www.w3.org/XML/1998/namespace")
+    public static let xml = NamespaceDeclaration("xml", uri: "https://www.w3.org/XML/1998/namespace")
     // XMLDSig
-    public static let ds = NamespaceDeclaration("ds", uri: "http://www.w3.org/2000/09/xmldsig#")
+    public static let xmldsig = NamespaceDeclaration("ds", uri: "http://www.w3.org/2000/09/xmldsig#")
     // XMLSchema
-    public static let xs = NamespaceDeclaration("xs", uri: "http://www.w3.org/2001/XMLSchema")
+    public static let xsd = NamespaceDeclaration("xsd", uri: "http://www.w3.org/2001/XMLSchema")
     // XML Schema instance
     public static let xsi = NamespaceDeclaration("xsi", uri: "http://www.w3.org/2001/XMLSchema-instance")
 }
 
 public class NamespaceContext {
-    private var ns = [String:String]()
+    private var namespaces = [String: String]()
 
     init () {
         
     }
     
-    static var defaultContext:NamespaceContext {
-        get {
-            let result = NamespaceContext()
-            result.declare(.xml)
-            return result
-        }
+    static var defaultContext: NamespaceContext {
+        let result = NamespaceContext()
+        result.declare(.xml)
+        return result
     }
     
     init(copyOf context: NamespaceContext) {
-        context.ns.forEach { (key,value) in ns[key] = value }
+        context.namespaces.forEach { (key, value) in namespaces[key] = value }
     }
     
     @discardableResult
     public func declare(_ declaration: NamespaceDeclaration) -> NamespaceContext {
-        return declare(declaration.prefix, uri:declaration.uri)
+        return declare(declaration.prefix, uri: declaration.uri)
     }
 
     @discardableResult
@@ -61,7 +59,7 @@ public class NamespaceContext {
         return self
     }
 
-    public var defaultURI : String? {
+    public var defaultURI: String? {
         get {
             return self[""]
         }
@@ -72,10 +70,10 @@ public class NamespaceContext {
 
     public subscript (prefix: String) -> String? {
         get {
-            return ns[prefix]
+            return namespaces[prefix]
         }
         set (uri) {
-            ns[prefix] = uri
+            namespaces[prefix] = uri
         }
     }
 
@@ -83,36 +81,33 @@ public class NamespaceContext {
         return self[prefix]
     }
     
-    public func resolvePrefix(forURI uri:String) -> String? {
-        for (key, value) in ns {
-            if value == uri {
-                return key
-            }
+    public func resolvePrefix(forURI uri: String) -> String? {
+        for (key, value) in namespaces where value == uri {
+            return key
         }
         return nil
     }
     
     public func allPrefixes() -> Set<String> {
-        return Set(ns.keys)
+        return Set(namespaces.keys)
     }
 
     public func allURIs() -> Set<String> {
-        return Set(ns.values)
+        return Set(namespaces.values)
     }
     
-    public func remove(prefix:String) {
-        ns.removeValue(forKey: prefix)
+    public func remove(prefix: String) {
+        namespaces.removeValue(forKey: prefix)
     }
 
-    public func remove(uri:String) {
-        ns = ns.filter { $1 != uri }
+    public func remove(uri: String) {
+        namespaces = namespaces.filter { $1 != uri }
     }
 
 }
 
 public struct QName: Hashable, CustomStringConvertible {
-    
-    
+
     public let localName: String
     public let namespaceURI: String
     
@@ -147,14 +142,12 @@ public struct QName: Hashable, CustomStringConvertible {
     }
     
     public var description: String {
-        get {
-            if namespaceURI != "" {
-                return "{\(namespaceURI)}\(localName)"
-            } else if localName != "" {
-                return localName
-            } else {
-                return "#anonymous"
-            }
+        if namespaceURI != "" {
+            return "{\(namespaceURI)}\(localName)"
+        } else if localName != "" {
+            return localName
+        } else {
+            return "#anonymous"
         }
     }
 

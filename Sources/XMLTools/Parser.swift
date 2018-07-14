@@ -26,14 +26,14 @@ public class Parser {
         parser.shouldProcessNamespaces = true
         parser.shouldReportNamespacePrefixes = true
         parser.delegate = delegate
-        if (!parser.parse()) {
+        if !parser.parse() {
             throw ParserError.parseError(lineNumber: delegate.errorLineNumber, columnNumber: delegate.errorColumnNumber, cause: delegate.parseError)
         }
         
         return Infoset(delegate.document)
     }
     
-    public func parse(string: String, using encoding:String.Encoding = .utf8) throws -> Infoset {
+    public func parse(string: String, using encoding: String.Encoding = .utf8) throws -> Infoset {
         guard let data = string.data(using: encoding) else {
             throw ParserError.malformedString
         }
@@ -57,14 +57,14 @@ public class Parser {
     
 }
 
-fileprivate class ParserDelegate:NSObject, XMLParserDelegate {
+private class ParserDelegate: NSObject, XMLParserDelegate {
     fileprivate var document: Document
     private var currentElement: Element?
     private var namespaceContext: NamespaceContext?
     fileprivate var parseError: Error?
     fileprivate var errorLineNumber = -1
     fileprivate var errorColumnNumber = -1
-    private let options:Parser.Options
+    private let options: Parser.Options
     
     init(options: Parser.Options) {
         self.options = options
@@ -72,7 +72,7 @@ fileprivate class ParserDelegate:NSObject, XMLParserDelegate {
         namespaceContext = .defaultContext
     }
     
-    func parser(_ parser: XMLParser, didStartElement elementName: String, namespaceURI: String?, qualifiedName qName: String?, attributes attributeDict: [String : String] = [:]) {
+    func parser(_ parser: XMLParser, didStartElement elementName: String, namespaceURI: String?, qualifiedName qName: String?, attributes attributeDict: [String: String] = [:]) {
         if let parent = currentElement {
             currentElement = parent.appendElement(QName(elementName, uri: namespaceURI!))
         } else {
@@ -102,7 +102,7 @@ fileprivate class ParserDelegate:NSObject, XMLParserDelegate {
 
     private func resolveNamespaceURI(forPrefix prefix: String ) -> String? {
         var element = currentElement
-        while (element != nil) {
+        while element != nil {
             if let uri = element?.sourceNamespaceContext?[prefix] {
                 return uri
             }
@@ -150,4 +150,3 @@ fileprivate class ParserDelegate:NSObject, XMLParserDelegate {
         self.errorColumnNumber = parser.columnNumber
     }
 }
-

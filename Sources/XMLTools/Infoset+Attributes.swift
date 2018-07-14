@@ -16,7 +16,7 @@ extension Infoset {
         return Infoset(matches, from: document())
     }
     
-    internal func attributeNodes() -> [Attribute]{
+    internal func attributeNodes() -> [Attribute] {
         var attrs = [Attribute]()
         for node in selectedNodes {
             if let element = node as? Element {

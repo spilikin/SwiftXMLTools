@@ -15,7 +15,7 @@ public enum SerializerOption {
 class Serializer: DefaultDocumentHandler {
 
     internal class State {
-        let element:Element?
+        let element: Element?
         var isEmpty = true
         var hasText = false
         var hasChildElements = false
@@ -72,15 +72,14 @@ class Serializer: DefaultDocumentHandler {
         return state
     }
     
-    private var state : State {
-        get {
-            if stateStack.isEmpty {
-                stateStack.append(State())
-            }
-            return stateStack.last!
+    private var state: State {
+        if stateStack.isEmpty {
+            stateStack.append(State())
         }
+        return stateStack.last!
     }
 
+    // swiftlint:disable cyclomatic_complexity
     override func startElement(_ element: Element, from document: Document) {
         if state.element != nil && state.isEmpty {
             write(">")
@@ -98,8 +97,8 @@ class Serializer: DefaultDocumentHandler {
         state.isEmpty = false
         state.hasChildElements = true
         write("<")
-        if (element.name().namespaceURI != "") {
-            let prefix = assureNamespaceDeclaration(element.name().namespaceURI, in:element)
+        if element.name().namespaceURI != "" {
+            let prefix = assureNamespaceDeclaration(element.name().namespaceURI, in: element)
             if prefix != "" {
                 write(prefix).write(":")
             }
@@ -122,7 +121,7 @@ class Serializer: DefaultDocumentHandler {
         for (qname, attr) in element.attributes {
             let value = attr.value ?? ""
             write(" ")
-            if (qname.namespaceURI != "") {
+            if qname.namespaceURI != "" {
                 let prefix = assureNamespaceDeclaration(qname.namespaceURI, in: element)
                 write(prefix).write(":")
             }
@@ -142,7 +141,7 @@ class Serializer: DefaultDocumentHandler {
                 element.namespaceContext = NamespaceContext()
             }
             var num = 0
-            while (element.resolveURI(forPrefix: "ns\(num)") != nil) {
+            while element.resolveURI(forPrefix: "ns\(num)") != nil {
                 num += 1
             }
             prefix = "ns\(num)"
@@ -161,7 +160,7 @@ class Serializer: DefaultDocumentHandler {
                 write(indentString())
             }
             write("</")
-            if (element.name().namespaceURI != "") {
+            if element.name().namespaceURI != "" {
                 let prefix = element.resolvePrefix(forURI: element.name().namespaceURI)!
                 if prefix != "" {
                     write(prefix).write(":")
@@ -204,18 +203,18 @@ class Serializer: DefaultDocumentHandler {
     }
     
     @discardableResult
-    public func write(_ str:String) -> Serializer {
-        if let strdata = str.data(using:encoding) {
+    public func write(_ str: String) -> Serializer {
+        if let strdata = str.data(using: encoding) {
             data.append(strdata)
         }
         return self
     }
     
     @discardableResult
-    public func text(_ str:String) -> Serializer {
+    public func text(_ str: String) -> Serializer {
         var escaped = str.replacingOccurrences(of: "&", with: "&amp;", options: .literal)
         
-        let map = ["<" : "&lt;", ">" : "&gt;"]
+        let map = ["<": "&lt;", ">": "&gt;"]
         for (char, escaping) in map {
             escaped = escaped.replacingOccurrences(of: char, with: escaping, options: .literal)
         }
@@ -226,11 +225,11 @@ class Serializer: DefaultDocumentHandler {
     }
     
     @discardableResult
-    public func attributeValue(_ str:String) -> Serializer {
+    public func attributeValue(_ str: String) -> Serializer {
         write("\"")
         var escaped = str.replacingOccurrences(of: "&", with: "&amp;", options: .literal)
         
-        let map = ["<" : "&lt;", ">" : "&gt;", "'" : "&apos;", "\"" : "&quot;"]
+        let map = ["<": "&lt;", ">": "&gt;", "'": "&apos;", "\"": "&quot;"]
         for (char, escaping) in map {
             escaped = escaped.replacingOccurrences(of: char, with: escaping, options: .literal)
         }

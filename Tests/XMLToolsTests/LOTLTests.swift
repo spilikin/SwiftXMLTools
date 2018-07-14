@@ -12,7 +12,7 @@ class LOTLTests: XCTestCase {
 
     let lotlURL = "https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml"
     
-    var lotl : Infoset!
+    var lotl: Infoset!
     
     override func setUp() {
         super.setUp()
@@ -24,7 +24,6 @@ class LOTLTests: XCTestCase {
         }
         lotl = parsed
     }
-    
     
     func testNamespaces() {
         
@@ -40,10 +39,10 @@ class LOTLTests: XCTestCase {
         
         XCTAssertEqual("application/vnd.etsi.tsl+xml", lotl["TrustServiceStatusList", "SchemeInformation", "PointersToOtherTSL", "OtherTSLPointer", 0].descendants(.qn("MimeType", xmlns: .tslx)).text)
         
-        XCTAssertEqual(1, lotl.descendants(.qn("Signature", xmlns: .ds)).count)
+        XCTAssertEqual(1, lotl.descendants(.qn("Signature", xmlns: .xmldsig)).count)
         
         // SHA1 Digest must have exact 20 Bytes (160 Bits)
-        XCTAssertEqual(20, lotl.descendants(.qn("CertDigest", xmlns: .xades)).select(.qn("DigestValue", xmlns: .ds)).base64Data?.endIndex)
+        XCTAssertEqual(20, lotl.descendants(.qn("CertDigest", xmlns: .xades)).select(.qn("DigestValue", xmlns: .xmldsig)).base64Data?.endIndex)
         XCTAssertEqual(20, lotl.descendants(.qn("CertDigest", xmlns: .xades)).select(XMLDSig.DigestValue).base64Data?.endIndex)
 
         lotl.namespaceContext.declare("tsl", uri: "http://uri.etsi.org/02231/v2#")
@@ -62,7 +61,6 @@ class LOTLTests: XCTestCase {
     
     func testNamespacesLang() {
     }
-    
 
 }
 
@@ -70,9 +68,8 @@ extension QName {
 }
 
 enum XMLDSig {
-    static let DigestValue = QName.qn("DigestValue", xmlns: .ds)
+    static let DigestValue = QName.qn("DigestValue", xmlns: .xmldsig)
 }
-
 
 extension NamespaceDeclaration {
     static let tsl = NamespaceDeclaration("tsl", uri: "http://uri.etsi.org/02231/v2#")

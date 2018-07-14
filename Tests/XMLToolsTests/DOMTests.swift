@@ -4,6 +4,7 @@
 //  
 //  Created on 24.06.18
 //
+// swiftlint:disable nesting
 
 import XCTest
 @testable import XMLTools
@@ -22,7 +23,7 @@ class DOMTests: XCTestCase {
     }
 
     func testTraversal() {
-        class Handler:DefaultDocumentHandler {
+        class Handler: DefaultDocumentHandler {
             
             var names = [QName]()
             

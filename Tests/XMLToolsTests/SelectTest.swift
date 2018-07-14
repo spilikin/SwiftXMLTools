@@ -2,7 +2,6 @@ import XCTest
 import Foundation
 import XMLTools
 
-
 class SelectTest: XCTestCase {
     let bookstoreSourceXML = """
     <?xml version="1.0" encoding="UTF-8"?>
@@ -36,7 +35,7 @@ class SelectTest: XCTestCase {
     </bookstore>
     """
     
-    var xml : Infoset!
+    var xml: Infoset!
     
     override func setUp() {
         super.setUp()

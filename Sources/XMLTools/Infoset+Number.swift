@@ -11,9 +11,8 @@ extension Infoset {
         print (formatter.maximumFractionDigits )
         formatter.numberStyle = .decimal
         return formatter
-}
+    }
 
-    
     public var intValue: Int? {
         get {
             return Int(text)

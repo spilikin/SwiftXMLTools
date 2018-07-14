@@ -32,10 +32,8 @@ extension Infoset {
             return Infoset.EMPTY
         }
         
-        for node in selectedNodes {
-            if node as? XMLElement != nil {
-                matches.append(node)
-            }
+        for node in selectedNodes where node as? XMLElement != nil {
+            matches.append(node)
         }
         selection.append(contentsOf: matches)
         let descendantSelection = selectNode().descendants()

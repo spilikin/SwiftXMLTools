@@ -72,7 +72,7 @@ extension Infoset {
      Sets the value the attribute for every selected node
      */
     @discardableResult
-    public func attr(_ name: String, setValue value:String) -> Infoset {
+    public func attr(_ name: String, setValue value: String) -> Infoset {
         return attr(safeResolveQName(name), setValue: value)
     }
 
@@ -80,7 +80,7 @@ extension Infoset {
      Sets the value the attribute for every selected node
      */
     @discardableResult
-    public func attr(_ qname: QName, setValue value:String) -> Infoset {
+    public func attr(_ qname: QName, setValue value: String) -> Infoset {
         for node in selectedNodes {
             if let element = node as? Element {
                 element.appendAttribute(qname, withValue: value)

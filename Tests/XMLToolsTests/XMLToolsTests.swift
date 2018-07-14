@@ -1,5 +1,6 @@
 import XCTest
 import XMLTools
+// swiftlint:disable function_body_length
 
 final class XMLToolsTests: XCTestCase {
     func testExample1() {
@@ -50,7 +51,7 @@ final class XMLToolsTests: XCTestCase {
         }
         
         // [24.99, 29.99, 39.95, 69.95]
-        let pricesDecimal = xml.descendants("book").select("price").map( { $0.number } )
+        let pricesDecimal = xml.descendants("book").select("price").map { $0.number } 
         print (pricesDecimal)
 
         // ["Harry Potter: The Philosopher's Stone", "Harry Potter: The Chamber of Secrets"]
@@ -72,9 +73,7 @@ final class XMLToolsTests: XCTestCase {
         
         xml.namespaceContext.declare(withNoPrefix: "http://uri.etsi.org/02231/v2#")
         print(xml["TrustServiceStatusList", "SchemeInformation", "TSLType"].text)
-        // also prints http://uri.etsi.org/TrstSvc/TrustedList/TSLType/EUlistofthelists
-
-        
+        // also prints http://uri.etsi.org/TrstSvc/TrustedList/TSLType/EUlistofthelists        
     }
     
     func testExample3() {
@@ -94,7 +93,7 @@ final class XMLToolsTests: XCTestCase {
         print(xml["tsl:TrustServiceStatusList", "tsl:SchemeInformation", "tsl:TSLType"].text)
         // prints http://uri.etsi.org/TrstSvc/TrustedList/TSLType/EUlistofthelists
        
-        xml.namespaceContext.remove(uri:"http://uri.etsi.org/02231/v2#")
+        xml.namespaceContext.remove(uri: "http://uri.etsi.org/02231/v2#")
         
         // equivalent to xmlns="http://uri.etsi.org/02231/v2#"
         xml.namespaceContext.declare(withNoPrefix: "http://uri.etsi.org/02231/v2#")

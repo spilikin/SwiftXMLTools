@@ -15,7 +15,7 @@ public class Node {
     
     public func parentDocument() -> Document? {
         var node: Node? = self
-        while (node != nil ) {
+        while node != nil {
             if let doc = node as? Document {
                 return doc
             }
@@ -25,15 +25,15 @@ public class Node {
     }
 }
 
-public class NamedNode : Node {
-    let nodeName : QName
+public class NamedNode: Node {
+    let nodeName: QName
     
     internal init (name: QName) {
         self.nodeName = name
         super.init(parent: nil)
     }
     
-    internal init (parent:Node, name: QName) {
+    internal init (parent: Node, name: QName) {
         self.nodeName = name
         super.init(parent: parent)
     }
@@ -44,13 +44,13 @@ public class NamedNode : Node {
     
 }
 
-public class Attribute : NamedNode {
-    var value : String?;
+public class Attribute: NamedNode {
+    var value: String?
     
-    override init (parent: Node, name:QName) {
+    override init (parent: Node, name: QName) {
         super.init(parent: parent, name: name)
     }
-    init (parent: Node, name:QName, value:String) {
+    init (parent: Node, name: QName, value: String) {
         self.value = value
         super.init(parent: parent, name: name)
     }
@@ -58,13 +58,12 @@ public class Attribute : NamedNode {
 }
 
 public class Element: NamedNode {
-    public lazy var attributes = [QName:Attribute]()
+    public lazy var attributes = [QName: Attribute]()
     // all `xmlns` declarations as parsed from the source document
     internal var sourceNamespaceContext: NamespaceContext?
     // namespace context of the current document
     public var namespaceContext: NamespaceContext?
-    
-    
+
     @discardableResult
     public func appendElement(_ name: String) -> Element {
         return appendElement(QName(name))
@@ -72,7 +71,7 @@ public class Element: NamedNode {
     
     @discardableResult
     public func appendElement(_ name: QName) -> Element {
-        let element = Element(parent: self, name: name);
+        let element = Element(parent: self, name: name)
         childNodes.append(element)
         return element
     }
@@ -89,21 +88,21 @@ public class Element: NamedNode {
     
     @discardableResult
     public func appendAttribute(_ name: QName, withValue value: String) -> Attribute {
-        let attr = Attribute(parent: self, name: name, value:value)
+        let attr = Attribute(parent: self, name: name, value: value)
         attributes[attr.nodeName] = attr
         return attr
     }
     
     @discardableResult
-    public func appendText(_ text:String) -> TextNode {
+    public func appendText(_ text: String) -> TextNode {
         let node = TextNode(parent: self, value: text)
         childNodes.append(node)
         return node
     }
     
     public func resolveURI(forPrefix prefix: String ) -> String? {
-        var element:Element? = self
-        while (element != nil) {
+        var element: Element? = self
+        while element != nil {
             if let uri = element?.namespaceContext?[prefix] {
                 return uri
             }
@@ -112,9 +111,9 @@ public class Element: NamedNode {
         return nil
     }
 
-    public func resolvePrefix(forURI uri:String) -> String? {
-        var element:Element? = self
-        while (element != nil) {
+    public func resolvePrefix(forURI uri: String) -> String? {
+        var element: Element? = self
+        while element != nil {
             if let uri = element?.namespaceContext?.resolvePrefix(forURI: uri) {
                 return uri
             }
@@ -124,8 +123,8 @@ public class Element: NamedNode {
     }
     
     func resolveURIFromSource(forPrefix prefix: String ) -> String? {
-        var element:Element? = self
-        while (element != nil) {
+        var element: Element? = self
+        while element != nil {
         if let uri = element?.sourceNamespaceContext?[prefix] {
             return uri
         }
@@ -135,8 +134,8 @@ public class Element: NamedNode {
     }
 
     func resolvePrefixFromSource(forURI uri: String ) -> String? {
-        var element:Element? = self
-        while (element != nil) {
+        var element: Element? = self
+        while element != nil {
             if let uri = element?.sourceNamespaceContext?.resolvePrefix(forURI: uri) {
                 return uri
             }
@@ -147,7 +146,7 @@ public class Element: NamedNode {
 }
 
 public class TextNode: Node {
-    public let value : String
+    public let value: String
     
     init (parent: Node, value: String) {
         self.value = value
@@ -157,7 +156,7 @@ public class TextNode: Node {
 }
 
 public class CommentNode: Node {
-    public let value : String
+    public let value: String
     
     init (parent: Node, value: String) {
         self.value = value
@@ -166,15 +165,15 @@ public class CommentNode: Node {
     
 }
 
-public class CDATANode : TextNode {
+public class CDATANode: TextNode {
     
 }
 
-public class ProcessingInstruction : Node {
+public class ProcessingInstruction: Node {
     let target: String
     let data: String
     
-    init (parent: Node, target:String, data:String) {
+    init (parent: Node, target: String, data: String) {
         self.target = target
         self.data = data
         super.init(parent: parent)
@@ -189,7 +188,7 @@ public class Document: Node {
     // Document is not standalone by default
     var standalone = false
 
-    var documentElement : Element?
+    var documentElement: Element?
     
     public init () {
         super.init(parent: nil)
@@ -202,7 +201,7 @@ public class Document: Node {
     
     public func appendElement(_ name: QName) -> Element {
         childNodes.removeAll()
-        let element = Element(parent: self, name: name);
+        let element = Element(parent: self, name: name)
         element.namespaceContext = .defaultContext
         childNodes.append(element)
         documentElement = element
@@ -210,7 +209,7 @@ public class Document: Node {
     }
     
     // the namespace context of the document is the one of it's root element
-    public var namespaceContext : NamespaceContext {
+    public var namespaceContext: NamespaceContext {
         get {
             if let root = documentElement {
                 if root.namespaceContext == nil {
@@ -227,4 +226,3 @@ public class Document: Node {
     }
         
 }
-

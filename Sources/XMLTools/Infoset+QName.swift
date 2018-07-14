@@ -9,7 +9,7 @@ import Foundation
 
 extension Infoset {
     
-    public var qnameValue:QName? {
+    public var qnameValue: QName? {
         get {
             guard let name = stringValue else {
                 return nil
