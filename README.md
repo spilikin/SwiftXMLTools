@@ -1,7 +1,7 @@
 # XMLTools for Swift
 
 ![Swift 4.0+](https://img.shields.io/badge/Swift-4.0+-orange.svg)
-![license](https://img.shields.io/github/license/mashape/apistatus.svg)
+![license](https://img.shields.io/github/license/spilikin/SwiftXMLTools.svg)
 
 ``XMLTools`` is a set APIs to parse, evaluate, manipulate and serialize complex XML structures. It is written written entirely in Swift programming language and designed to work on  all platforms supporting Swift (e.g. macOS, iOS).
 
