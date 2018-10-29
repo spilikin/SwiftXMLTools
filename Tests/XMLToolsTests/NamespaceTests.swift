@@ -66,6 +66,9 @@ class NamespaceTests: XCTestCase {
         XCTAssertEqual("Test1_1_1Test1_1_2", xml["level1", "level1_1"].text)
         XCTAssertEqual("Test1_2_1Test1_2_2", xml["level1", "level1_2"].text)
         
+        XCTAssertEqual("Test1_1_1", xml["level1", "level1_1", QName("level1_1_1", uri: "urn:dummy_A")].text)
+        XCTAssertEqual("Test1_1_1", xml["level1", "level1_1", "nsA:level1_1_1"].text)
+        
         xml.namespaceContext.declare("custom_A", uri: "urn:dummy_A")
         xml.namespaceContext.declare("custom_A_2", uri: "urn:dummy_A")
         XCTAssertEqual("Test1_1_1", xml["level1", "level1_1", "custom_A:level1_1_1"].text)

@@ -14,7 +14,7 @@ extension XMLTools.QName: InfosetSelector {}
 public class Infoset: Sequence {
     public typealias XMLElement = XMLTools.Element
 
-    open static let EMPTY = Infoset()
+    public static let EMPTY = Infoset()
 
     open var selectedNodes: [Node]
     open var parentDocument: Document
@@ -96,6 +96,9 @@ public class Infoset: Sequence {
         if name.range(of: ":") != nil {
             let tuple = name.components(separatedBy: ":")
             if let uri = contextElement()?.resolveURI(forPrefix: tuple[0]) {
+                return QName(tuple[1], uri: uri)
+            }
+            if let uri = contextElement()?.resolveURIFromSource(forPrefix: tuple[0]) {
                 return QName(tuple[1], uri: uri)
             }
             return QName(tuple[1])
