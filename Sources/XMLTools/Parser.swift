@@ -1,8 +1,8 @@
 import Foundation
 
 public enum ParserError: Error {
-    case malformedURL(urlString:String)
-    case contentNotAvailable(url: URL)
+    case malformedURL (urlString: String)
+    case contentNotAvailable (url: URL)
     case malformedString
     case parseError(lineNumber: Int, columnNumber: Int, cause: Error?)
 }

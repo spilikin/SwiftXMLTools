@@ -10,27 +10,23 @@ import Foundation
 extension Infoset {
     
     public var qnameValue: QName? {
-        get {
-            guard let name = stringValue else {
-                return nil
-            }
-            
-            if name.range(of: ":") != nil {
-                let tuple = name.components(separatedBy: ":")
-                if let uri = contextElement()?.resolveURI(forPrefix: tuple[0]) {
-                    return QName(tuple[1], uri: uri)
-                } else if let uri = contextElement()?.resolveURIFromSource(forPrefix: tuple[0]) {
-                    return QName(tuple[1], uri: uri)
-                }
+        guard let name = stringValue else {
+            return nil
+        }
 
-                return nil
-            } else if namespaceContext.defaultURI != nil {
-                return QName(name, uri: namespaceContext.defaultURI!)
+        if name.range(of: ":") != nil {
+            let tuple = name.components(separatedBy: ":")
+            if let uri = contextElement()?.resolveURI(forPrefix: tuple[0]) {
+                return QName(tuple[1], uri: uri)
+            } else if let uri = contextElement()?.resolveURIFromSource(forPrefix: tuple[0]) {
+                return QName(tuple[1], uri: uri)
             }
-            return QName(name)
+
+            return nil
+        } else if namespaceContext.defaultURI != nil {
+            return QName(name, uri: namespaceContext.defaultURI!)
         }
-        set (newValue) {
-        }
+        return QName(name)
     }
     
 }

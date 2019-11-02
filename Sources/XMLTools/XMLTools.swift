@@ -128,9 +128,10 @@ public struct QName: Hashable, CustomStringConvertible {
     public static func == (lhs: QName, rhs: QName) -> Bool {
         return lhs.localName == rhs.localName && lhs.namespaceURI == rhs.namespaceURI
     }
-    
-    public var hashValue: Int {
-        return localName.hashValue ^ namespaceURI.hashValue
+
+    public func hash(into: inout Hasher) {
+        localName.hash(into: &into)
+        namespaceURI.hash(into: &into)
     }
 
     public static func qn(_ localName: String, xmlns declaration: NamespaceDeclaration) -> QName {

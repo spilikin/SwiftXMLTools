@@ -117,8 +117,12 @@ class Serializer: DefaultDocumentHandler {
             write("=").attributeValue((element.namespaceContext?[prefix])!)
         }
         
-        // TODO sort attributes
-        for (qname, attr) in element.attributes {
+        let sortedAttributes = element.attributes.keys.sorted {
+            $0.description < $1.description
+        }
+
+        for qname in sortedAttributes {
+            let attr = element.attributes[qname]!
             let value = attr.value ?? ""
             write(" ")
             if qname.namespaceURI != "" {

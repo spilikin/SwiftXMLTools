@@ -39,7 +39,7 @@ class DOMTests: XCTestCase {
         do {
             xml = try parser.parse(contentsOf: "https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml")
         } catch {
-            print (error)
+            print(error)
             XCTFail("\(error)")
             return
         }

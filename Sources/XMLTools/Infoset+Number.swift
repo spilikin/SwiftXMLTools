@@ -8,7 +8,7 @@ extension Infoset {
         formatter.decimalSeparator = "."
         formatter.thousandSeparator = ""
         formatter.maximumFractionDigits = 10
-        print (formatter.maximumFractionDigits )
+        print(formatter.maximumFractionDigits )
         formatter.numberStyle = .decimal
         return formatter
     }

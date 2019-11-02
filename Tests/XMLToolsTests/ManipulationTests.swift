@@ -73,7 +73,7 @@ class BuilderTests: XCTestCase {
 
         let xmlData = builtXML.document().data(.indent, .omitXMLDeclaration)
 
-        print ( String(data: xmlData!, encoding: .utf8)! )
+        print( String(data: xmlData!, encoding: .utf8)! )
 
         let parser = Parser()
 

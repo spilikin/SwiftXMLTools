@@ -47,16 +47,16 @@ final class XMLToolsTests: XCTestCase {
         }
         
         for book in xml["bookstore", "book"] {
-            print (book["title"].text)
+            print(book["title"].text)
         }
         
         // [24.99, 29.99, 39.95, 69.95]
         let pricesDecimal = xml.descendants("book").select("price").map { $0.number } 
-        print (pricesDecimal)
+        print(pricesDecimal)
 
         // ["Harry Potter: The Philosopher's Stone", "Harry Potter: The Chamber of Secrets"]
         let potterBooks = xml["bookstore", "book", "title"].select({ $0.text.starts(with: "Harry Potter")}).map({$0.text})
-        print (potterBooks)
+        print(potterBooks)
     }
 
     func testExample2() {
@@ -66,7 +66,7 @@ final class XMLToolsTests: XCTestCase {
         do {
             xml = try parser.parse(contentsOf: "https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml")
         } catch {
-            print (error)
+            print(error)
             XCTFail("\(error)")
             return
         }
@@ -83,7 +83,7 @@ final class XMLToolsTests: XCTestCase {
         do {
             xml = try parser.parse(contentsOf: "https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml")
         } catch {
-            print (error)
+            print(error)
             XCTFail("\(error)")
             return
         }
@@ -102,7 +102,7 @@ final class XMLToolsTests: XCTestCase {
         let xpathOtherTSLPointer = ["TrustServiceStatusList", "SchemeInformation", "PointersToOtherTSL", "OtherTSLPointer"]
         
         // how many TSLs are in Europe?
-        print ("There are \(xml[xpathOtherTSLPointer].count) pointers to other TSLs")
+        print("There are \(xml[xpathOtherTSLPointer].count) pointers to other TSLs")
         
         // select the german TSL
         let germanTSL = xml.select(xpathOtherTSLPointer).select {
@@ -113,7 +113,7 @@ final class XMLToolsTests: XCTestCase {
         let xpathOperatorName = ["AdditionalInformation", "OtherInformation", "SchemeOperatorName", "Name"]
         
         // print some useful info, notite the usage of pre-defined .xml_lang constant from QName
-        print ("German TSL is:")
+        print("German TSL is:")
         print(" - Operated by   : \(germanTSL[xpathOperatorName].select { $0.attr(.XmlLang).text == "en" } .text)")
         print("    in Deutsch   : \(germanTSL[xpathOperatorName].select { $0.attr(.XmlLang).text == "de" } .text)")
         print(" - TSL Located at: \( germanTSL["TSLLocation"].text )")
@@ -186,14 +186,14 @@ final class XMLToolsTests: XCTestCase {
         do {
             xml = try parser.parse(string: wsdlSourceXML)
         } catch {
-            print (error)
+            print(error)
             XCTFail("\(error)")
             return
         }
 
         // parsed this way, no namespaces are declared in the Infoset,
         // we need to access them by speicifying the URI directly
-        print (xml[QName("description", uri: "http://www.w3.org/ns/wsdl"),
+        print(xml[QName("description", uri: "http://www.w3.org/ns/wsdl"),
                    QName("documentation", uri: "http://www.w3.org/ns/wsdl")].text)
         XCTAssertEqual(xml[QName("description", uri: "http://www.w3.org/ns/wsdl"),
                            QName("documentation", uri: "http://www.w3.org/ns/wsdl")].text,
@@ -201,7 +201,7 @@ final class XMLToolsTests: XCTestCase {
 
         // let's make it shorter, but still very bulky
         let wsdlURI = "http://www.w3.org/ns/wsdl"
-        print (xml[QName("description", uri: wsdlURI), QName("documentation", uri: wsdlURI)].text)
+        print(xml[QName("description", uri: wsdlURI), QName("documentation", uri: wsdlURI)].text)
         XCTAssertEqual(xml[QName("description", uri: wsdlURI),
                            QName("documentation", uri: wsdlURI)].text,
                        "This is a sample WSDL 2.0 document.")
@@ -210,7 +210,7 @@ final class XMLToolsTests: XCTestCase {
         // please note, that the source has no prefix and it still works!
         // equivalent to xmlns:wsdl="http://www.w3.org/ns/wsdl"
         xml.namespaceContext.declare("wsdl", uri: "http://www.w3.org/ns/wsdl")
-        print (xml["wsdl:description", "wsdl:documentation"].text)
+        print(xml["wsdl:description", "wsdl:documentation"].text)
         XCTAssertEqual(xml["wsdl:description", "wsdl:documentation"].text, "This is a sample WSDL 2.0 document.")
 
         // reset the namespace context
@@ -219,7 +219,7 @@ final class XMLToolsTests: XCTestCase {
         // redefine the namespace without the prefix
         // equivalent to xmlns="http://www.w3.org/ns/wsdl"
         xml.namespaceContext.declare(withNoPrefix: "http://www.w3.org/ns/wsdl")
-        print (xml["description", "documentation"].text)
+        print(xml["description", "documentation"].text)
         XCTAssertEqual(xml["description", "documentation"].text, "This is a sample WSDL 2.0 document.")
 
         // reset the namespace context
@@ -231,13 +231,13 @@ final class XMLToolsTests: XCTestCase {
         let httpBinding = xml.descendants("wsdl:binding").select {
             $0.attr("name").text == "HttpBinding"
         }
-        print (httpBinding["wsdl:operation"].attr("whttp:method").text) // "GET"
+        print(httpBinding["wsdl:operation"].attr("whttp:method").text) // "GET"
         XCTAssertEqual(httpBinding["wsdl:operation"].attr("whttp:method").text, "GET")
 
         let soapBinding = xml.descendants("wsdl:binding").select {
             $0.attr("name").text == "SoapBinding"
         }
-        print (soapBinding.attr("wsoap:protocol").text) // "http://www.w3.org/2003/05/soap/bindings/HTTP/"
+        print(soapBinding.attr("wsoap:protocol").text) // "http://www.w3.org/2003/05/soap/bindings/HTTP/"
         XCTAssertEqual(soapBinding.attr("wsoap:protocol").text, "http://www.w3.org/2003/05/soap/bindings/HTTP/")
         
         let anotherParser = XMLTools.Parser()
@@ -248,12 +248,12 @@ final class XMLToolsTests: XCTestCase {
         do {
             anotherXML = try anotherParser.parse(string: wsdlSourceXML)
         } catch {
-            print (error)
+            print(error)
             XCTFail("\(error)")
             return
         }
         
-        print (anotherXML["description"].name().namespaceURI) // "http://www.w3.org/ns/wsdl"
+        print(anotherXML["description"].name().namespaceURI) // "http://www.w3.org/ns/wsdl"
         XCTAssertEqual(anotherXML["description"].name().namespaceURI, "http://www.w3.org/ns/wsdl")
 
     }

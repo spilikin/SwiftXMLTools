@@ -14,7 +14,7 @@ extension XMLTools.QName: InfosetSelector {}
 public class Infoset: Sequence {
     public typealias XMLElement = XMLTools.Element
 
-    open static let EMPTY = Infoset()
+    public static let EMPTY = Infoset()
 
     open var selectedNodes: [Node]
     open var parentDocument: Document

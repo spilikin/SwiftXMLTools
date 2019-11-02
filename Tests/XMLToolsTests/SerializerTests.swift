@@ -25,7 +25,7 @@ class SerializerTests: XCTestCase {
 
         //xml.namespaceContext.declare(.xs)
         if let indentedData = xml.document().data(.indent) {
-            print (String(data: indentedData, encoding: .utf8)! )
+            print(String(data: indentedData, encoding: .utf8)! )
 
             do {
                 let reparsed = try parser.parse(data: indentedData)
@@ -54,7 +54,7 @@ class SerializerTests: XCTestCase {
         }
 
         if let indentedData = xml.document().data(.indent) {
-            print (String(data: indentedData, encoding: .utf8)! )
+            print(String(data: indentedData, encoding: .utf8)! )
 
             do {
                 let reparsed = try parser.parse(data: indentedData)

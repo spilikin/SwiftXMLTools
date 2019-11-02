@@ -23,20 +23,17 @@ extension Infoset {
     }
 
     public var stringValue: String? {
-        get {
-            var result: String? = nil
-            for node in selectedNodes {
-                let val = nodeToText(node)
-                if let val = val {
-                    if result == nil {
-                        result = val
-                    } else {
-                        result = result! + val
-                    }
+        var result: String?
+        for node in selectedNodes {
+            let val = nodeToText(node)
+            if let val = val {
+                if result == nil {
+                    result = val
+                } else {
+                    result = result! + val
                 }
             }
-            return result
         }
-        // TODO: Implement set, setting to nil should remove the attribute (or even element?)
+        return result
     }
 }
