@@ -393,3 +393,9 @@ swift package generate-xcodeproj
 swift build
 swift test
 ```
+
+Create release
+```
+git tag <VERSION>
+git push origin <VERSION>
+```
