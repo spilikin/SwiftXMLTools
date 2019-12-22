@@ -6,9 +6,8 @@ extension Infoset {
         let formatter = NumberFormatter()
         formatter.locale = Locale(identifier: "en_US")
         formatter.decimalSeparator = "."
-        formatter.thousandSeparator = ""
+        formatter.groupingSeparator = ""
         formatter.maximumFractionDigits = 10
-        print(formatter.maximumFractionDigits )
         formatter.numberStyle = .decimal
         return formatter
     }
