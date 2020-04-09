@@ -1,7 +1,7 @@
 //
 //  QNameTests.swift
 //  XMLToolsTests
-//  
+//
 //  Created on 06.07.18
 //
 

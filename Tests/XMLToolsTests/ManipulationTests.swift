@@ -1,7 +1,7 @@
 //
 //  BuilderTests.swift
 //  XMLToolsTests
-//  
+//
 //  Created on 28.06.18
 //
 // swiftlint:disable nesting function_body_length
@@ -81,7 +81,7 @@ class BuilderTests: XCTestCase {
             XCTFail("Unable to parse")
             return
         }
-        
+
         // 1. bookstore
         XCTAssertEqual("bookstore", parsedXML["bookstore"].name().localName)
         // 2. /bookstore
@@ -152,7 +152,7 @@ class BuilderTests: XCTestCase {
         xml["bookstore", "book", 0, "title"].text = "I renamed this book!"
 
         XCTAssertTrue(xml["bookstore", "book"].select({$0["title"].text.starts(with: "Harry Potter")}).count == 1, "Expected 1 Harry Potter book after rename")
-        
+
         // rename all books to Fahrenheit 451
         xml["bookstore", "book", "title"].text = "Fahrenheit 451"
 

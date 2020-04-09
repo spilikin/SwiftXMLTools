@@ -1,7 +1,7 @@
 //
 //  Serializer.swift
 //  XMLTools
-//  
+//
 //  Created on 26.06.18
 //
 
@@ -23,7 +23,7 @@ class Serializer: DefaultDocumentHandler {
         init() {
             element = nil
         }
-        
+
         init(_ element: Element) {
             self.element = element
         }
@@ -36,16 +36,16 @@ class Serializer: DefaultDocumentHandler {
     private var optionOmitXMLDeclaration = false
 
     init (_ options: [SerializerOption]) {
-        
+
         if options.contains(.indent) {
             optionIndent = true
         }
-        
+
         if options.contains(.omitXMLDeclaration) {
             optionOmitXMLDeclaration = true
         }
     }
-    
+
     override func startDocument(_ document: Document) {
         if !optionOmitXMLDeclaration {
             write("<?xml version=").attributeValue(document.version)
@@ -57,10 +57,10 @@ class Serializer: DefaultDocumentHandler {
             newLine()
         }
     }
-    
+
     override func endDocument(_ document: Document) {
     }
-    
+
     @discardableResult
     private func popState() -> State? {
         return stateStack.popLast()
@@ -71,7 +71,7 @@ class Serializer: DefaultDocumentHandler {
         stateStack.append(state)
         return state
     }
-    
+
     private var state: State {
         if stateStack.isEmpty {
             stateStack.append(State())
@@ -104,7 +104,7 @@ class Serializer: DefaultDocumentHandler {
             }
         }
         write(element.name().localName)
-        
+
         for prefix in (element.namespaceContext?.allPrefixes().sorted()) ?? [String]() {
             // skip the built-in xml namespace
             if prefix == "xml" {
@@ -116,7 +116,7 @@ class Serializer: DefaultDocumentHandler {
             }
             write("=").attributeValue((element.namespaceContext?[prefix])!)
         }
-        
+
         let sortedAttributes = element.attributes.keys.sorted {
             $0.description < $1.description
         }
@@ -131,11 +131,11 @@ class Serializer: DefaultDocumentHandler {
             }
             write(qname.localName).write("=").attributeValue(value)
         }
-        
+
         pushState(State(element))
         identLevel += 1
     }
-    
+
     // assures that the given namespace is declared, if not declares them with ns0..n naming pattern
     private func assureNamespaceDeclaration(_ uri: String, in element: Element) -> String {
         var prefix = element.resolvePrefix(forURI: uri)
@@ -153,7 +153,7 @@ class Serializer: DefaultDocumentHandler {
         }
         return prefix!
     }
-    
+
     override func endElement(_ element: Element, from document: Document) {
         identLevel -= 1
         if state.isEmpty {
@@ -172,11 +172,11 @@ class Serializer: DefaultDocumentHandler {
             }
             write(element.name().localName).write(">")
         }
-        
+
         popState()
 
     }
-    
+
     override func textNode(_ textNode: TextNode, from document: Document) {
         if state.element != nil && state.isEmpty {
             write(">")
@@ -185,27 +185,27 @@ class Serializer: DefaultDocumentHandler {
         state.hasText = true
         text(textNode.value)
     }
-    
+
     override func cdata(_ cdata: CDATANode, from document: Document) {
-        
+
     }
-    
+
     override func comment(_ comment: CommentNode, from document: Document) {
-        
+
     }
-    
+
     override func processingInstruction(_ instruction: ProcessingInstruction, from document: Document) {
-        
+
     }
-    
+
     private func indentString() -> String {
         return String(repeating: " ", count: 4*identLevel)
     }
- 
+
     public func newLine() {
         write("\n")
     }
-    
+
     @discardableResult
     public func write(_ str: String) -> Serializer {
         if let strdata = str.data(using: encoding) {
@@ -213,26 +213,26 @@ class Serializer: DefaultDocumentHandler {
         }
         return self
     }
-    
+
     @discardableResult
     public func text(_ str: String) -> Serializer {
         var escaped = str.replacingOccurrences(of: "&", with: "&amp;", options: .literal)
-        
+
         let map = ["<": "&lt;", ">": "&gt;"]
         for (char, escaping) in map {
             escaped = escaped.replacingOccurrences(of: char, with: escaping, options: .literal)
         }
-        
+
         write(escaped)
-        
+
         return self
     }
-    
+
     @discardableResult
     public func attributeValue(_ str: String) -> Serializer {
         write("\"")
         var escaped = str.replacingOccurrences(of: "&", with: "&amp;", options: .literal)
-        
+
         let map = ["<": "&lt;", ">": "&gt;", "'": "&apos;", "\"": "&quot;"]
         for (char, escaping) in map {
             escaped = escaped.replacingOccurrences(of: char, with: escaping, options: .literal)
@@ -245,7 +245,7 @@ class Serializer: DefaultDocumentHandler {
 }
 
 extension Document {
-    
+
     public func data(_ options: SerializerOption...) -> Data? {
         let serializer = Serializer(options)
         do {

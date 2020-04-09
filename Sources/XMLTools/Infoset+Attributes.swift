@@ -5,7 +5,7 @@ extension Infoset {
     public func attr(_ name: String) -> Infoset {
         return attr(safeResolveQName(name, resolveDefaultNamespace: false))
     }
-    
+
     public func attr(_ qname: XMLTools.QName) -> Infoset {
         var matches = [Attribute]()
         for attr in attributeNodes() {
@@ -15,7 +15,7 @@ extension Infoset {
         }
         return Infoset(matches, from: document())
     }
-    
+
     internal func attributeNodes() -> [Attribute] {
         var attrs = [Attribute]()
         for node in selectedNodes {
@@ -25,9 +25,9 @@ extension Infoset {
         }
         return attrs
     }
-    
+
     public func attr() -> Infoset {
-        
+
         return Infoset(attributeNodes(), from: document())
     }
 

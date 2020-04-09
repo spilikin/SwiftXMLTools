@@ -1,14 +1,14 @@
 //
 //  Infoset+QName.swift
 //  XMLTools
-//  
+//
 //  Created on 06.07.18
 //
 
 import Foundation
 
 extension Infoset {
-    
+
     public var qnameValue: QName? {
         guard let name = stringValue else {
             return nil
@@ -28,5 +28,5 @@ extension Infoset {
         }
         return QName(name)
     }
-    
+
 }

@@ -1,7 +1,7 @@
 //
 //  ValuesTests.swift
 //  XMLToolsTests
-//  
+//
 //  Created on 24.06.18
 //
 
@@ -10,7 +10,7 @@ import XMLTools
 
 class ValuesTests: XCTestCase {
     var xml: XMLTools.Infoset!
-    
+
     override func setUp() {
         let doc = Document()
         xml = doc.select()
@@ -23,7 +23,7 @@ class ValuesTests: XCTestCase {
         root.appendText("followed by part2")
         XCTAssertEqual(3, root.childNodes.count)
         XCTAssertEqual("part1 followed by part2", xml["root"].text)
-        
+
         xml["root"].text = "completely different"
         XCTAssertEqual(1, root.childNodes.count)
         XCTAssertEqual("completely different", xml["root"].text)

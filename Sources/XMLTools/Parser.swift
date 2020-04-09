@@ -16,7 +16,7 @@ public class Parser {
     }
 
     public var options = Options()
-    
+
     public init() {
     }
 
@@ -29,32 +29,32 @@ public class Parser {
         if !parser.parse() {
             throw ParserError.parseError(lineNumber: delegate.errorLineNumber, columnNumber: delegate.errorColumnNumber, cause: delegate.parseError)
         }
-        
+
         return Infoset(delegate.document)
     }
-    
+
     public func parse(string: String, using encoding: String.Encoding = .utf8) throws -> Infoset {
         guard let data = string.data(using: encoding) else {
             throw ParserError.malformedString
         }
         return try parse(data: data)
     }
-    
+
     public func parse(contentsOf url: URL) throws -> Infoset {
         guard let data = try? Data(contentsOf: url) else {
             throw ParserError.contentNotAvailable(url: url)
         }
         return try parse(data: data)
     }
-    
+
     public func parse(contentsOf urlString: String) throws -> Infoset {
         guard let url = URL(string: urlString) else {
             throw ParserError.malformedURL(urlString: urlString)
         }
-        
+
         return try parse(contentsOf: url)
     }
-    
+
 }
 
 private class ParserDelegate: NSObject, XMLParserDelegate {
@@ -65,13 +65,13 @@ private class ParserDelegate: NSObject, XMLParserDelegate {
     fileprivate var errorLineNumber = -1
     fileprivate var errorColumnNumber = -1
     private let options: Parser.Options
-    
+
     init(options: Parser.Options) {
         self.options = options
         document = Document()
         namespaceContext = .defaultContext
     }
-    
+
     func parser(_ parser: XMLParser, didStartElement elementName: String, namespaceURI: String?, qualifiedName qName: String?, attributes attributeDict: [String: String] = [:]) {
         if let parent = currentElement {
             currentElement = parent.appendElement(QName(elementName, uri: namespaceURI!))
@@ -83,7 +83,7 @@ private class ParserDelegate: NSObject, XMLParserDelegate {
             currentElement?.sourceNamespaceContext = NamespaceContext(copyOf: namespaceContext!)
             namespaceContext = nil
         }
-        
+
         for (name, value) in attributeDict {
             let qname: XMLTools.QName
             if name.range(of: ":") != nil {
@@ -110,7 +110,7 @@ private class ParserDelegate: NSObject, XMLParserDelegate {
         }
         return nil
     }
-    
+
     func parser(_ parser: XMLParser, foundCharacters string: String) {
         if options.trimWhitespaces {
             let trimmed = string.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
@@ -121,7 +121,7 @@ private class ParserDelegate: NSObject, XMLParserDelegate {
             currentElement?.appendText(string)
         }
     }
-    
+
     func parser(_ parser: XMLParser, didEndElement elementName: String, namespaceURI: String?, qualifiedName qName: String?) {
         if let parent = currentElement?.parentNode as? Element {
             currentElement = parent
@@ -132,10 +132,10 @@ private class ParserDelegate: NSObject, XMLParserDelegate {
             currentElement = nil
         }
     }
-    
+
     func parserDidEndDocument(_ parser: XMLParser) {
     }
-    
+
     func parser(_ parser: XMLParser, didStartMappingPrefix prefix: String, toURI namespaceURI: String) {
         if namespaceContext == nil {
             // create empty namespace context
@@ -143,7 +143,7 @@ private class ParserDelegate: NSObject, XMLParserDelegate {
         }
         namespaceContext?[prefix] = namespaceURI
     }
-    
+
     func parser(_ parser: XMLParser, parseErrorOccurred parseError: Error) {
         self.parseError = parseError
         self.errorLineNumber = parser.lineNumber

@@ -1,14 +1,14 @@
 //
 //  Infoset+Manipulation.swift
 //  XMLTools
-//  
+//
 //  Created on 28.06.18
 //
 
 import Foundation
 
 extension Infoset {
-    
+
     /**
      Appends new element with given name to every currently selected element or document
      */
@@ -33,7 +33,7 @@ extension Infoset {
         }
         return .EMPTY
     }
-    
+
     /**
      Removes the currently selected nodes from their corresponding parent(s)
      */
@@ -47,7 +47,7 @@ extension Infoset {
         }
         return parentInfoset
     }
-    
+
     /**
      Clears the currently selected nodes by removing their child nodes
      */
