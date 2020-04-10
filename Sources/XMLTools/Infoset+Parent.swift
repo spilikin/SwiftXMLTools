@@ -1,7 +1,7 @@
 //
 //  Infoset+Parent.swift
 //  XMLTools
-//  
+//
 //  Created on 28.06.18
 //
 

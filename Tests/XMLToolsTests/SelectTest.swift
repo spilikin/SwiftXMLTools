@@ -5,21 +5,21 @@ import XMLTools
 class SelectTest: XCTestCase {
     let bookstoreSourceXML = """
     <?xml version="1.0" encoding="UTF-8"?>
-    
+
     <bookstore>
-    
+
     <book>
     <title lang="en">Harry Potter: The Philosopher's Stone</title>
     <price>24.99</price>
     <pages>223</pages>
     </book>
-    
+
     <book>
     <title lang="en">Harry Potter: The Chamber of Secrets</title>
     <price>29.99</price>
     <pages>251</pages>
     </book>
-    
+
     <book>
     <title lang="en">Learning XML</title>
     <price>39.95</price>
@@ -34,25 +34,25 @@ class SelectTest: XCTestCase {
 
     </bookstore>
     """
-    
+
     var xml: Infoset!
-    
+
     override func setUp() {
         super.setUp()
         let parser = XMLTools.Parser()
-        
+
         guard let parsed = try? parser.parse(string: bookstoreSourceXML, using: .utf8) else {
             XCTFail("Error: cant parse")
             return
         }
         xml = parsed
     }
-    
+
     override func tearDown() {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
         super.tearDown()
     }
-    
+
     func testPaths() {
         // 1. bookstore
         XCTAssertEqual("bookstore", xml["bookstore"].name().localName)
@@ -100,27 +100,27 @@ class SelectTest: XCTestCase {
         // 18.
         XCTAssertEqual(["en", "en", "en", "de"], xml.descendants("book").map({ $0["title"].attr("lang").text}))
     }
-    
+
     func testSequence() {
-        
+
         let selection = xml["bookstore", "book"].select()
-        
+
         // 4 boooks 3 elements each
         XCTAssertEqual(12, selection.count)
-        
+
         for child in selection {
             XCTAssertTrue(["title", "price", "pages"].contains(child.name().localName), "Selected elements must be one of: title, price, pages")
         }
-        
+
     }
 
     func testDescendants() {
-    
+
         XCTAssertEqual(4, xml.descendants("price").count)
         // 100. Arrays
         XCTAssertEqual([24.99, 29.99, 39.95, 69.95], xml.descendants("price").map({$0.doubleValue}))
     }
- 
+
     func testFilter() {
         // 200. bookstore/book[starts-with(title,'Harry Potter')]
         let potter = xml["bookstore", "book"].select({ $0["title"].text.starts(with: "Harry Potter") })

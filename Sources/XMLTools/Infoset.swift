@@ -182,7 +182,7 @@ public class Infoset: Sequence {
         }
         return selection
     }
-    
+
     /**
      Returns n-th node of this infoset as the new infoset with only one node
     */
@@ -192,7 +192,7 @@ public class Infoset: Sequence {
         }
         return Infoset.EMPTY
     }
-    
+
     public func select(_ name: String) -> Infoset {
         return select(safeResolveQName(name))
     }
@@ -221,7 +221,7 @@ public class Infoset: Sequence {
             return Infoset.EMPTY
         }
     }
-    
+
     public func select(byPosition conditionMatch: (Int) -> Bool) -> Infoset {
         var pos = 0
         var matches = [Node]()

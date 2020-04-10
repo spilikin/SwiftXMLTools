@@ -1,8 +1,8 @@
 public struct NamespaceDeclaration {
-    
+
     public let prefix: String
     public let uri: String
-    
+
     public init (_ prefix: String, uri: String) {
         self.prefix = prefix
         self.uri = uri
@@ -24,19 +24,19 @@ public class NamespaceContext {
     private var namespaces = [String: String]()
 
     init () {
-        
+
     }
-    
+
     static var defaultContext: NamespaceContext {
         let result = NamespaceContext()
         result.declare(.xml)
         return result
     }
-    
+
     init(copyOf context: NamespaceContext) {
         context.namespaces.forEach { (key, value) in namespaces[key] = value }
     }
-    
+
     @discardableResult
     public func declare(_ declaration: NamespaceDeclaration) -> NamespaceContext {
         return declare(declaration.prefix, uri: declaration.uri)
@@ -80,14 +80,14 @@ public class NamespaceContext {
     public func resolveURI(forPrefix prefix: String) -> String? {
         return self[prefix]
     }
-    
+
     public func resolvePrefix(forURI uri: String) -> String? {
         for (key, value) in namespaces where value == uri {
             return key
         }
         return nil
     }
-    
+
     public func allPrefixes() -> Set<String> {
         return Set(namespaces.keys)
     }
@@ -95,7 +95,7 @@ public class NamespaceContext {
     public func allURIs() -> Set<String> {
         return Set(namespaces.values)
     }
-    
+
     public func remove(prefix: String) {
         namespaces.removeValue(forKey: prefix)
     }
@@ -110,21 +110,21 @@ public struct QName: Hashable, CustomStringConvertible {
 
     public let localName: String
     public let namespaceURI: String
-    
+
     public init (_ name: String) {
         localName = name
         namespaceURI = ""
     }
-    
+
     public init (_ localName: String, uri namespaceURI: String) {
         self.localName = localName
         self.namespaceURI = namespaceURI
     }
-    
+
     public init (_ localName: String, xmlns declaration: NamespaceDeclaration) {
         self.init(localName, uri: declaration.uri)
     }
-    
+
     public static func == (lhs: QName, rhs: QName) -> Bool {
         return lhs.localName == rhs.localName && lhs.namespaceURI == rhs.namespaceURI
     }
@@ -137,11 +137,11 @@ public struct QName: Hashable, CustomStringConvertible {
     public static func qn(_ localName: String, xmlns declaration: NamespaceDeclaration) -> QName {
         return QName(localName, xmlns: declaration)
     }
-    
+
     public static func qn(_ localName: String, uri namespaceURI: String) -> QName {
         return QName(localName, uri: namespaceURI)
     }
-    
+
     public var description: String {
         if namespaceURI != "" {
             return "{\(namespaceURI)}\(localName)"

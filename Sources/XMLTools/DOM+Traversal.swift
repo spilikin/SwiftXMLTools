@@ -1,7 +1,7 @@
 //
 //  DOM+Traversal.swift
 //  XMLTools
-//  
+//
 //  Created on 25.06.18
 //
 
@@ -41,25 +41,25 @@ public class DefaultDocumentHandler: DocumentHandler {
 
     public func startDocument(_ document: Document) throws {
     }
-    
+
     public func endDocument(_ document: Document) throws {
     }
-    
+
     public func startElement(_ element: Element, from document: Document) throws {
     }
-    
+
     public func endElement(_ element: Element, from document: Document) throws {
     }
-    
+
     public func textNode(_ textNode: TextNode, from document: Document) throws {
     }
-    
+
     public func cdata(_ cdata: CDATANode, from document: Document) throws {
     }
-    
+
     public func comment(_ comment: CommentNode, from document: Document) throws {
     }
-    
+
     public func processingInstruction(_ instruction: ProcessingInstruction, from document: Document) throws {
     }
 
