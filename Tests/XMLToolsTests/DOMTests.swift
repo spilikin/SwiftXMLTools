@@ -1,7 +1,7 @@
 //
 //  DOMTests.swift
 //  XMLToolsTests
-//  
+//
 //  Created on 24.06.18
 //
 // swiftlint:disable nesting
@@ -10,13 +10,13 @@ import XCTest
 @testable import XMLTools
 
 class DOMTests: XCTestCase {
-    
+
     func testManualCreationAndEval() {
         let doc = XMLTools.Document()
         let root = doc.appendElement("root")
         root.appendAttribute("aaa", withValue: "bbb")
         root.appendAttribute("name1", withNamespace: "urn:test", andValue: "ccc")
-        
+
         XCTAssertEqual("root", doc.documentElement?.name().localName)
         XCTAssertEqual("bbb", doc.documentElement?.attributes[QName("aaa")]?.value)
         XCTAssertEqual("ccc", doc.documentElement?.attributes[QName("name1", uri: "urn:test")]?.value)
@@ -24,17 +24,17 @@ class DOMTests: XCTestCase {
 
     func testTraversal() {
         class Handler: DefaultDocumentHandler {
-            
+
             var names = [QName]()
-            
+
             override func startElement(_ element: Element, from document: Document) {
                 names.append(element.name())
             }
-            
+
         }
-        
+
         let parser = XMLTools.Parser()
-        
+
         let xml: XMLTools.Infoset
         do {
             xml = try parser.parse(contentsOf: "https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml")

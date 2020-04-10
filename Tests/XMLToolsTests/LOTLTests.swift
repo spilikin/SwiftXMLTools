@@ -11,44 +11,44 @@ import XMLTools
 class LOTLTests: XCTestCase {
 
     let lotlURL = "https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml"
-    
+
     var lotl: Infoset!
-    
+
     override func setUp() {
         super.setUp()
         let parser = XMLTools.Parser()
-        
+
         guard let parsed = try? parser.parse(contentsOf: lotlURL) else {
             XCTFail("Error: cant parse")
             return
         }
         lotl = parsed
     }
-    
+
     func testNamespaces() {
-        
+
         lotl.namespaceContext.declare(withNoPrefix: .tsl)
         XCTAssertEqual(1, lotl["TrustServiceStatusList"].count)
         XCTAssertEqual(NamespaceDeclaration.tsl.uri, lotl["TrustServiceStatusList"].name().namespaceURI)
         XCTAssertEqual("ID0001", lotl["TrustServiceStatusList"].attr("Id").text)
-        
+
         XCTAssertEqual(1, lotl["TrustServiceStatusList"].attr(QName("Id")).count)
         XCTAssertEqual(0, lotl["TrustServiceStatusList"].attr(.qn("Id", xmlns: .tsl)).count)
 
         XCTAssertEqual("http://uri.etsi.org/TrstSvc/TrustedList/TSLType/EUlistofthelists", lotl["TrustServiceStatusList", "SchemeInformation", "TSLType"].text)
-        
+
         XCTAssertEqual("application/vnd.etsi.tsl+xml", lotl["TrustServiceStatusList", "SchemeInformation", "PointersToOtherTSL", "OtherTSLPointer", 0].descendants(.qn("MimeType", xmlns: .tslx)).text)
-        
+
         XCTAssertEqual(1, lotl.descendants(.qn("Signature", xmlns: .xmldsig)).count)
-        
+
         // SHA256 Digest must have exact 64 Bytes (160 Bits)
         XCTAssertEqual(64, lotl.descendants(.qn("CertDigest", xmlns: .xades)).select(.qn("DigestValue", xmlns: .xmldsig)).base64Data?.endIndex)
         XCTAssertEqual(64, lotl.descendants(.qn("CertDigest", xmlns: .xades)).select(XMLDSig.DigestValue).base64Data?.endIndex)
 
         lotl.namespaceContext.declare("tsl", uri: "http://uri.etsi.org/02231/v2#")
-        
+
         XCTAssertEqual(1, lotl["tsl:TrustServiceStatusList"].attr(QName("Id")).count)
-        
+
         /*
          xmlns="http://uri.etsi.org/02231/v2#" tsl
          xmlns:ns2="http://www.w3.org/2000/09/xmldsig#" ds
@@ -58,7 +58,7 @@ class LOTLTests: XCTestCase {
          xmlns:ns6="http://uri.etsi.org/01903/v1.4.1#" xadesds
          */
     }
-    
+
     func testNamespacesLang() {
     }
 

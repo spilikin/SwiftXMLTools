@@ -1,7 +1,7 @@
 import Foundation
 
 extension Infoset {
-    
+
     static internal var DecimalFormatter: NumberFormatter {
         let formatter = NumberFormatter()
         formatter.locale = Locale(identifier: "en_US")
@@ -37,7 +37,7 @@ extension Infoset {
             }
         }
     }
-    
+
     public var decimalValue: Decimal? {
         get {
             return Decimal(string: text, locale: Locale(identifier: "en"))
@@ -50,7 +50,7 @@ extension Infoset {
             }
         }
     }
-    
+
     public var number: Decimal {
         get {
             return Decimal(string: text, locale: Locale(identifier: "en_US")) ?? 0

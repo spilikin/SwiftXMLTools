@@ -37,7 +37,7 @@ final class XMLToolsTests: XCTestCase {
         </bookstore>
         """
         let parser = XMLTools.Parser()
-        
+
         let xml: XMLTools.Infoset
         do {
             xml = try parser.parse(string: xmlString, using: .utf8)
@@ -45,13 +45,13 @@ final class XMLToolsTests: XCTestCase {
             XCTFail("\(error)")
             return
         }
-        
+
         for book in xml["bookstore", "book"] {
             print(book["title"].text)
         }
-        
+
         // [24.99, 29.99, 39.95, 69.95]
-        let pricesDecimal = xml.descendants("book").select("price").map { $0.number } 
+        let pricesDecimal = xml.descendants("book").select("price").map { $0.number }
         print(pricesDecimal)
 
         // ["Harry Potter: The Philosopher's Stone", "Harry Potter: The Chamber of Secrets"]
@@ -61,7 +61,7 @@ final class XMLToolsTests: XCTestCase {
 
     func testExample2() {
         let parser = XMLTools.Parser()
-        
+
         let xml: XMLTools.Infoset
         do {
             xml = try parser.parse(contentsOf: "https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml")
@@ -70,15 +70,15 @@ final class XMLToolsTests: XCTestCase {
             XCTFail("\(error)")
             return
         }
-        
+
         xml.namespaceContext.declare(withNoPrefix: "http://uri.etsi.org/02231/v2#")
         print(xml["TrustServiceStatusList", "SchemeInformation", "TSLType"].text)
-        // also prints http://uri.etsi.org/TrstSvc/TrustedList/TSLType/EUlistofthelists        
+        // also prints http://uri.etsi.org/TrstSvc/TrustedList/TSLType/EUlistofthelists
     }
-    
+
     func testExample3() {
         let parser = XMLTools.Parser()
-        
+
         let xml: XMLTools.Infoset
         do {
             xml = try parser.parse(contentsOf: "https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml")
@@ -87,31 +87,31 @@ final class XMLToolsTests: XCTestCase {
             XCTFail("\(error)")
             return
         }
-        
+
         // equivalent to xmlns:tsl="http://uri.etsi.org/02231/v2#"
         xml.namespaceContext.declare("tsl", uri: "http://uri.etsi.org/02231/v2#")
         print(xml["tsl:TrustServiceStatusList", "tsl:SchemeInformation", "tsl:TSLType"].text)
         // prints http://uri.etsi.org/TrstSvc/TrustedList/TSLType/EUlistofthelists
-       
+
         xml.namespaceContext.remove(uri: "http://uri.etsi.org/02231/v2#")
-        
+
         // equivalent to xmlns="http://uri.etsi.org/02231/v2#"
         xml.namespaceContext.declare(withNoPrefix: "http://uri.etsi.org/02231/v2#")
 
         // define the long XPath to reuse it later
         let xpathOtherTSLPointer = ["TrustServiceStatusList", "SchemeInformation", "PointersToOtherTSL", "OtherTSLPointer"]
-        
+
         // how many TSLs are in Europe?
         print("There are \(xml[xpathOtherTSLPointer].count) pointers to other TSLs")
-        
+
         // select the german TSL
         let germanTSL = xml.select(xpathOtherTSLPointer).select {
             $0.select("AdditionalInformation", "OtherInformation", "SchemeTerritory").text.lowercased() == "de"
         }
-        
+
         // another long XPath to be reused
         let xpathOperatorName = ["AdditionalInformation", "OtherInformation", "SchemeOperatorName", "Name"]
-        
+
         // print some useful info, notite the usage of pre-defined .xml_lang constant from QName
         print("German TSL is:")
         print(" - Operated by   : \(germanTSL[xpathOperatorName].select { $0.attr(.XmlLang).text == "en" } .text)")
@@ -138,7 +138,7 @@ final class XMLToolsTests: XCTestCase {
               <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
                         xmlns="http://www.tmsws.com/wsdl20sample"
                         targetNamespace="http://www.example.com/wsdl20sample">
-                         
+
                  <xs:element name="request"> ... </xs:element>
                  <xs:element name="response"> ... </xs:element>
               </xs:schema>
@@ -158,7 +158,7 @@ final class XMLToolsTests: XCTestCase {
                     type="http://www.w3.org/ns/wsdl/http">
               <operation ref="tns:Get" whttp:method="GET"/>
            </binding>
-           
+
         <!-- Concrete Binding with SOAP-->
            <binding name="SoapBinding" interface="tns:Interface1"
                     type="http://www.w3.org/ns/wsdl/soap"
@@ -181,7 +181,7 @@ final class XMLToolsTests: XCTestCase {
 
     public func testExampleNamespaces() {
         let parser = XMLTools.Parser()
-        
+
         let xml: XMLTools.Infoset
         do {
             xml = try parser.parse(string: wsdlSourceXML)
@@ -239,11 +239,11 @@ final class XMLToolsTests: XCTestCase {
         }
         print(soapBinding.attr("wsoap:protocol").text) // "http://www.w3.org/2003/05/soap/bindings/HTTP/"
         XCTAssertEqual(soapBinding.attr("wsoap:protocol").text, "http://www.w3.org/2003/05/soap/bindings/HTTP/")
-        
+
         let anotherParser = XMLTools.Parser()
         // tell the parser to preserve all namespace prefix declarations
         anotherParser.options.preserveSourceNamespaceContexts = true
-        
+
         let anotherXML: XMLTools.Infoset
         do {
             anotherXML = try anotherParser.parse(string: wsdlSourceXML)
@@ -252,12 +252,12 @@ final class XMLToolsTests: XCTestCase {
             XCTFail("\(error)")
             return
         }
-        
+
         print(anotherXML["description"].name().namespaceURI) // "http://www.w3.org/ns/wsdl"
         XCTAssertEqual(anotherXML["description"].name().namespaceURI, "http://www.w3.org/ns/wsdl")
 
     }
-    
+
     static var allTests = [
         ("testExample1", testExample1),
         ("testExample2", testExample2),
