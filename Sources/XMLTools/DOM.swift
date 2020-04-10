@@ -45,8 +45,8 @@ public class NamedNode: Node {
 }
 
 public class Attribute: NamedNode {
-    var value: String?
-    
+    public var value: String?
+
     override init (parent: Node, name: QName) {
         super.init(parent: parent, name: name)
     }
