@@ -10,7 +10,7 @@ extension Infoset {
         let selection = Infoset([Node](), from: document())
 
         if selectedNodes.count == 0 {
-            return Infoset.EMPTY
+            return Infoset(from: parentDocument)
         }
 
         for node in selectedNodes {
@@ -29,7 +29,7 @@ extension Infoset {
         let selection = Infoset([Node](), from: document())
 
         if selectedNodes.count == 0 {
-            return Infoset.EMPTY
+            return Infoset(from: parentDocument)
         }
 
         for node in selectedNodes where node as? XMLElement != nil {

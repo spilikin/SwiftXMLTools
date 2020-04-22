@@ -14,14 +14,23 @@ extension XMLTools.QName: InfosetSelector {}
 public class Infoset: Sequence {
     public typealias XMLElement = XMLTools.Element
 
-    public static let EMPTY = Infoset()
-
     open var selectedNodes: [Node]
     open var parentDocument: Document
 
-    private init() {
+    /*
+     Creates an empty infoset and a new document
+     */
+    public init() {
         selectedNodes = [Node]()
         parentDocument = Document()
+    }
+
+    /*
+     Creates an empty associated with given document
+     */
+    public init(from document: Document) {
+        selectedNodes = [Node]()
+        parentDocument = document
     }
 
     init(_ nodes: [Node], from document: Document) {
@@ -190,7 +199,7 @@ public class Infoset: Sequence {
         if index < selectedNodes.count {
             return Infoset(selectedNodes[index])
         }
-        return Infoset.EMPTY
+        return Infoset(from: parentDocument)
     }
 
     public func select(_ name: String) -> Infoset {
@@ -218,7 +227,7 @@ public class Infoset: Sequence {
         case let qname as XMLTools.QName:
             return select(qname)
         default:
-            return Infoset.EMPTY
+            return Infoset(from: parentDocument)
         }
     }
 
@@ -285,7 +294,7 @@ public class Infoset: Sequence {
         if let lastNode = selectedNodes.last {
             return Infoset(lastNode)
         }
-        return Infoset.EMPTY
+        return Infoset(from: parentDocument)
     }
 
     public func merge(with otherSelection: Infoset) {
